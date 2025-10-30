@@ -3,6 +3,8 @@
 ## UC-08 - Explore Opportunities
 **Actors:** Volunteer (primary), System (secondary)
 
+**Description:** Allows volunteers to discover, search, filter and view detailed information about available volunteering opportunities
+
 **Preconditions**
 - Volunteer is authenticated and logged in
 - System has active volunteering opportunities
@@ -33,3 +35,43 @@
 - Volunteer has viewed opportunity details
 - Opportunity view count may be incremented
 - Volunteer may have saved opportunity to favorites
+
+## UC-09 - Register Organization
+**Actors:** Nonprofit Organization (primary), Admin (secondary)
+
+**Description:** Allows nonprofit organizations to register and create their profile on the platform to start posting volunteering opportunities
+
+**Preconditions**
+- Nonprofit representative has valid email address
+- Organization is legitimate and meets platform criteria
+- System registration feature is enabled
+
+**Main Succes Scenario**
+1. Nonprofit representative clicks "Register Organization"
+2. System displays registration form
+3. Representative enters organization details (name, address, mission, contact info)
+4. Representative uploads verification documents
+5. System validates required information
+6. Representative creates admin account credentials
+7. System submits application for review
+8. System admin reviews and approves organization
+9. System sends approval notification and setup instructions
+10. Organization can now post opportunities
+
+**Extensions**
+- **Organization name already exists:**
+  1. System suggests alternative name or requests verification
+  2. Representative provides additional documentation
+- **Missing required information:**
+  1. System highlights missing fields
+  2. Representative completes required information
+- **Application rejected:**
+  1. System admin provides rejection reason
+  2. System notifies representative
+  3. Representative can appeal or correct issues
+
+**Postconditions**
+- Organization profile is created (pending or approved status)
+- Admin account is established
+- Notification is sent to representative
+- Organization can access appropriate features based on approval status
