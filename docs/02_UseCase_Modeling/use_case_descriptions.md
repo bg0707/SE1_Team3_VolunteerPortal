@@ -8,10 +8,10 @@
 - Volunteers have an account on our Website.
 
 **Main Success Scenario:** Volunteer wants to see opportunity details
-- Volunteer selects the Opportunity Tab
-- System shows the list of available Opportunities
-- Volunteer choses an Opportunity
-- System shows the details to said Opportunity
+1. Volunteer selects the Opportunity Tab
+2. System shows the list of available Opportunities
+3. Volunteer choses an Opportunity
+4. System shows the details to said Opportunity
 
 
 **Postconditions:** Volunteer is allowed to view the details about an Opportunity
@@ -35,11 +35,11 @@ Prerequisite not met:
 - Admin rejects Organization
 
 **Main Success Scenario:** Organization wants to be accepted into our website
-- Organization Admin creates an account for Organizations
-- Admin receives registration form 
-- Admin evaluates the application
-- Admin accepts application
-- Organization is added to the website
+1. Organization Admin creates an account for Organizations
+2. Admin receives registration form 
+3. Admin evaluates the application
+4. Admin accepts application
+5. Organization is added to the website
 
 **Postconditions:** Organization is added to the website and can post Opportunities.
 
@@ -63,10 +63,10 @@ Admin override:
 - Admin rejects authentication request
 
 **Main Success Scenario:** User gets authenticated
-- User creates an account
-- User sends information proving their identity
-- Admin processes information 
-- Admin accepts their request
-- User is authenticated
+1. User creates an account
+2. User sends information proving their identity
+3. Admin processes information 
+4. Admin accepts their request
+5. User is authenticated
 
 **Postconditions:** The user has now verified their identity and can navigate the website freely.
