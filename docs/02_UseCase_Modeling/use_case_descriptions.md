@@ -76,7 +76,7 @@
 - Notification is sent to representative
 - Organization can access appropriate features based on approval status
 
-## UC-08 - Send Notification
+## UC-10 - Send Notification
 **Actors:** Nonprofit organization (primary), Volunteer (secondary)
 
 **Description:** Allows nonprofit administrators to send notifications to volunteers about opportunity updates, changes, or general announcements
@@ -115,3 +115,41 @@
 - Notification is delivered to selected recipients
 - Delivery status is recorded in system
 - Volunteers receive the notification through chosen channels
+
+## UC-11 - Report Listing
+**Actors:** Volunteer (primary), Nonprofit organization (secondary)
+
+**Description:** Volunteers can report opportunities that appear innapropriate, misleading or outdated
+
+**Preconditions**
+- Volunteer is authenticated and logged in
+- Opportunity listing exists and is visible
+- Reporting feature is enabled in the system
+- Volunteer has viewed the opportunity details
+
+**Main Succes Scenario**
+1. Volunteer views an opportunity they wish to report
+2. Volunteer clicks "Report This Listing" button
+3. System displays reporting form with reason categories
+4. Volunteer selects report reason from predefined options
+5. Volunteer provides additional details and context in description field
+6. Volunteer submits the report
+
+**Extensions**
+- **Custom reason required:**
+  1. Volunteer selects "Other" reason
+  2. System shows additional text field for custom explanation
+  3. Volunteer provides detailed reasoning
+- **Insufficient information provided:**
+  1. System prompts volunteer for additional details
+  2. Volunteer completes required information
+- **Report is invalid or duplicate:**
+  1. System admin marks report as resolved
+  2. No action taken on opportunity
+  3. Volunteer may receive explanation if appropriate
+
+**Postconditions**
+- Report is recorded in system database
+- Opportunity is flagged for administrative review
+- Volunteer receives confirmation of report submission
+- System administrators are notified of pending reports
