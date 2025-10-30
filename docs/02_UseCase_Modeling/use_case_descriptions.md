@@ -153,3 +153,30 @@
 - Opportunity is flagged for administrative review
 - Volunteer receives confirmation of report submission
 - System administrators are notified of pending reports
+
+## UC-01 - Moderate Listings
+**Actors:** Admin (primary)
+
+**Description:** Review and moderate reported, expired, or suspicious listings to maintain platform integrity and ensure compliance with content guidelines.
+
+**Preconditions**
+- The platform administrator has logged into the system.
+- At least one listing has been reported, or detected as expired or suspicious.
+
+**Main Succes Scenario**
+1. The administrator navigates into the “Moderation” module.
+2. The system displays a list of reported/detected listings, including organization name, report reason, date, and current status.
+3. The administrator selects a listing to view its details, including description, attachments, and report history.
+4. The administrator chooses an appropriate action:
+   - Keep: Mark listing as compliant and close report.
+   - Suspend: Temporarily remove the listing from public view.
+   - Remove: Permanently remove the listing from the platform.
+   - Restore: Reinstate a previously suspended or removed listing.
+6. The administrator provides or selects a moderation reason (e.g., spam, expired).
+7. The system saves the moderation decision, updates the listing’s status, and logs the action.
+8. The system automatically notifies the related organization and/or the reporter about the decision.
+
+**Postconditions**
+- The listing status is updated to “Active,” “Suspended,” or “Removed.”
+- The system records the moderation action in an audit log.
+- Relevant parties (organization owner and/or reporter) are notified of the moderation outcome.
