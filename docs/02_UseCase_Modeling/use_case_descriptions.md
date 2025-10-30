@@ -75,3 +75,43 @@
 - Admin account is established
 - Notification is sent to representative
 - Organization can access appropriate features based on approval status
+
+## UC-08 - Send Notification
+**Actors:** Nonprofit organization (primary), Volunteer (secondary)
+
+**Description:** Allows nonprofit administrators to send notifications to volunteers about opportunity updates, changes, or general announcements
+
+**Preconditions**
+- Nonprofit admin is authenticated and logged in
+- Organization is approved and active
+- There are registered volunteers to notify
+- Notification system is operational
+
+**Main Succes Scenario**
+1. Nonprofit admin navigates to Notification section
+2. System displays notification dashboard and templates
+3. Admin selects notification type (opportunity update, reminder, announcement)
+4. Admin composes message content and subject
+5. Admin selects target users (all volunteers, specific group)
+6. Admin chooses delivery method (email, in-app, both)
+7. Admin schedules delivery (immediate or scheduled)
+8. System validates notification parameters
+9. System sends notification to selected users
+10. System updates delivery status
+
+**Extensions**
+- **No user available:**
+  1. System warns admin about empty recipient list
+  2. Admin adjusts recipient criteria or cancels
+- **Notification content violates guidelines:**
+  1. System flags inappropriate content
+  2. Admin revises content or appeals flag
+- **Delivery fails for some users:**
+  1. System retries failed deliveries
+  2. System logs delivery failures
+  3. Admin can view delivery report with failure details
+
+**Postconditions**
+- Notification is delivered to selected recipients
+- Delivery status is recorded in system
+- Volunteers receive the notification through chosen channels
