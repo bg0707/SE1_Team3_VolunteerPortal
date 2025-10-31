@@ -15,4 +15,5 @@ Our team is committed to collaboration, structure and quality and to learning fr
 - Ribeiro Botelho Gabriel 
 - Bassong Cédric 
 - Jiahao Lin
+- Stylianos NTINOS
 
