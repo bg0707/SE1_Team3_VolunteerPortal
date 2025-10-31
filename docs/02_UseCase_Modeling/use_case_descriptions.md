@@ -113,8 +113,8 @@
 ## UC-06 Verify Organization:
 
 **Actors:**  
-- Admin (primary)
-- Organization (secondary)
+- Organization (primary)
+- Admin (secondary)
 - Organizations DB (secondary )
 
 **Preconditions:**
