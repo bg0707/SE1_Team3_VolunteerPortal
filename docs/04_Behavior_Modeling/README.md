@@ -6,6 +6,10 @@ This folder presents the behavioral view of the system in hand to show how the d
 - [`Use Case 02 - Apply Opportunity`](UC02_apply_opportunity)
 - [`Use Case 03 - Filter/Search Opportunity`](UC03_filter_search_opportunity)
 - [`Use Case 04 - Manage Opportunity`](UC04_manage_opportunities)
+- [`Use Case 12 - Moderate Listings`](UC-12-sequence-diagram.png)
+- [`Use Case 13 - Manage User Access`](UC-13-sequence-diagram.png)
+- [`Use Case 14 - Review Applicants`](UC-14-sequence-diagram.png)
+- [`Use Case 15 - Manage Applications`](UC-15-sequence-diagram.png)
 
 
 **Goal**
