@@ -15,6 +15,12 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
 
 4. As a volunteer, I want to view and manage my upcoming volunteer activities so that I can stay organized. 
 
+5. As a volunteer, I want to report false opportunities so that the website can remove these.  
+
+6. As a volunteer, I want to receive notifications when my application status changes so that I stay updated. 
+
+7. As a volunteer, I want edit my profile information so that I can keep my details up to date.
+
 
 **Website Admins**
 
@@ -23,6 +29,8 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
 2. As an admin, I want to be able to remove listings so that the website stays legitimate and trustworthy.
 
 3. As an admin, I want to manage user accounts, so the website can be safe and functional. 
+
+4. As an admin, I want to check organizations against an external refistry so that onyl verified organizations can be in our website. 
 
 **Nonprofit organizations**
 
@@ -34,6 +42,9 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
  
 4. As a nonprofit organization, I want to mark an opportunity as fulfilled so that new applicants cannot apply. 
 
+5. As a nonprofit organization, I want receive notifications when a new volunteer applies so that I can review applications promptly.
+
+6. As a nonprofit organization, I want edit my profile information so that I can keep my organizations's details up to date.
 
 ## 4.2. User Scenarios
 
