@@ -23,5 +23,7 @@ export const registerAccount = async(email, password) => {
 
     })
 
+    return registration;
+
     
 }
