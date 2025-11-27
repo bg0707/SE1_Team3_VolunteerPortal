@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import authenticateUser from '../services/authenticateUser.service.js';
+import authenticateUser from '../services/login.service.js';
 import asyncHandler from 'express-async-handler';
 
 const loginController = asyncHandler(async (req, res) => {
@@ -10,6 +10,11 @@ const loginController = asyncHandler(async (req, res) => {
 
     try {
 
+        //  verify JWT_SECRET is defined
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined');
+        } 
+        
         // Authenticate user 
         const potentialUser = await authenticateUser(email, password);
 
@@ -31,10 +36,7 @@ const loginController = asyncHandler(async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        //  verify JWT_SECRET is defined
-        if (!process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET is not defined');
-        }   
+          
 
         // Send response with token
         res.status(200).json({

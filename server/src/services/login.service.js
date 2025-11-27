@@ -1,7 +1,7 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 
-export async function authenticateUser(email, password) {
+async function authenticateUser(email, password) {
 
     // verify if email is in the database if so store it in user
     const user = await User.findOne({ where: { email } });

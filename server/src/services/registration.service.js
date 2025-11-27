@@ -1,5 +1,6 @@
+import { hash } from 'bcrypt';
 import User from '../models/user.model.js'
-import Registration from '../models/registration.model.js'
+
 
 
 export const registerAccount = async(email, password) => {
@@ -7,7 +8,7 @@ export const registerAccount = async(email, password) => {
     const userPassword = String(password);
 
     // verify if account does not exist in database
-    const existing = await Registration.findOne({
+    const existing = await User.findOne({
         where: {email: userEmail}
     })
     
@@ -15,12 +16,14 @@ export const registerAccount = async(email, password) => {
         throw new Error('This email is already registered to another account. Please login!')   
     }
 
+    const hashedPassword = await bcrypt.hash(userPassword, 10);
     // create new registration
-    const registration = await Registration.create({
-        //userId: ... still need to figure out
+    const registration = await User.create({
         email : userEmail,
-        password : userPassword
-
+        password : hashPassword,
+        role : "volunteer",
+        createdAt : new Date()
+    
     })
 
     return registration;
