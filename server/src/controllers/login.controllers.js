@@ -28,7 +28,7 @@ const loginController = asyncHandler(async (req, res) => {
                 role: user.role
             },
             process.env.JWT_SECRET,
-            { expiresIn: '4h' }
+            { expiresIn: '1h' }
         );
 
         //  verify JWT_SECRET is defined
