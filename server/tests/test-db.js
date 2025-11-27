@@ -2,11 +2,11 @@ import sequelize from '../src/config/db.js';
 
 async function testConnection() {
   try {
-    const [rows] = await sequelize.query('SELECT NOW() AS now');
-    console.log('Database connected:', rows[0]);
+    await sequelize.authenticate();
+    console.log("Database connected successfully");
   } catch (err) {
-    console.error('Database connection failed:', err);
+    console.error("DB connection error:", err);
   }
 }
 
-testConnection();
+export default testConnection;
