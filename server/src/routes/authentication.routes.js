@@ -1,7 +1,7 @@
 import express from "express";
-import registerVolunteer from "../controllers/registration.volunteer.controllers.js";
-import registerOrganization from "../controllers/registration.organization.controllers.js";
-import loginController from "../controllers/login.controllers.js";
+import registerVolunteer from "../controllers/registration.volunteer.controller.js";
+import registerOrganization from "../controllers/registration.organization.controller.js";
+import loginController from "../controllers/login.controller.js";
 
 const router = express.Router();
 
