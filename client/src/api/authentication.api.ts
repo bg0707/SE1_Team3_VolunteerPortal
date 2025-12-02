@@ -13,7 +13,7 @@ export interface LoginResponse {
 
 // LOGIN
 export async function login(email: string, password: string): Promise<LoginResponse> {
-  const response = await fetch(`${API_URL}/login`, {  // <-- use backticks
+  const response = await fetch(`${API_URL}/login`, { 
     method: "POST",
     headers: {
       "Content-Type": "application/json",

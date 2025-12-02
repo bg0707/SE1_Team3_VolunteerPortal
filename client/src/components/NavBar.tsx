@@ -67,7 +67,7 @@ export default function NavBar() {
 
             <li>
               <a
-                href="#"
+                href="/opportunities"
                 className="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary lg:hover:bg-transparent lg:hover:text-fg-brand lg:p-0"
               >
                 Browse Opportunities
@@ -101,7 +101,7 @@ export default function NavBar() {
               </a>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary lg:hover:bg-transparent lg:hover:text-fg-brand lg:p-0">
+              <a href="/auth" className="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary lg:hover:bg-transparent lg:hover:text-fg-brand lg:p-0">
                 Login/Register
               </a>
             </li>
