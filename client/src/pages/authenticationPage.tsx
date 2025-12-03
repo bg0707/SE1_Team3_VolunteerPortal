@@ -1,10 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginForm from "../components/loginForm";
 import VolunteerRegistrationForm from "../components/registerVolunteerForm";
 import OrganizationRegistrationForm from "../components/registerOrganizationForm";
+import Dashboard from "../components/Dashbord";
 
 export default function AuthenticationPage() {
   const [view, setView] = useState<"login" | "volunteer" | "organization">("login");
+  const [user, setUser] = useState<any>(null);
+
+  // Check if user is logged in (on refresh)
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+
+    if (savedUser && token) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  const handleLoginSuccess = (userData: any) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setView("login");
+  };
+
+  // If logged in → show Dashboard
+  if (user) {
+    return <Dashboard user={user} onLogout={handleLogout} />;
+  }
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -20,9 +49,17 @@ export default function AuthenticationPage() {
         </h1>
 
         {/* Forms */}
-        {view === "login" && <LoginForm />}
-        {view === "volunteer" && <VolunteerRegistrationForm />}
-        {view === "organization" && <OrganizationRegistrationForm />}
+        {view === "login" && (
+          <LoginForm onLoginSuccess={handleLoginSuccess} />
+        )}
+
+        {view === "volunteer" && (
+          <VolunteerRegistrationForm switchToLogin={() => setView("login")} />
+        )}
+
+        {view === "organization" && (
+          <OrganizationRegistrationForm switchToLogin={() => setView("login")} />
+        )}
 
         {/* Buttons */}
         <div className="mt-6 flex flex-col gap-3">

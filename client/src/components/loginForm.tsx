@@ -1,21 +1,27 @@
 import { useState } from "react"; 
 import { login } from '../api/authentication.api.ts';
 
+interface LoginProps {
+  onLoginSuccess: (user: any) => void;
+}
 
-export default function LoginForm() {
+
+export default function LoginForm({ onLoginSuccess }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // You are tracking this error, but not displaying it yet!
+  const [error, setError] = useState(""); 
 
   const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(""); // Clear previous errors on new submission
+    setError("");
     
     try {
       const data = await login(email, password);
       console.log("Logged in:", data);
       localStorage.setItem("token", data.token);
-      // Optional: Add a redirect or success state here
+      onLoginSuccess(data.user);
+
+      
     } catch (err) {
       setError((err as Error).message);
     }
@@ -23,22 +29,21 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      {/* 🔴 FIX: Add value and onChange to capture Email input */}
       <input
         type="email"
         placeholder="Email"
         className="px-3 py-2 border border-gray-300 rounded-md"
-        value={email} // <-- Added
-        onChange={(e) => setEmail(e.target.value)} // <-- Added
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
       />
 
-      {/* 🔴 FIX: Add value and onChange to capture Password input */}
+      
       <input
         type="password"
         placeholder="Password"
         className="px-3 py-2 border border-gray-300 rounded-md"
-        value={password} // <-- Added
-        onChange={(e) => setPassword(e.target.value)} // <-- Added
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <button
@@ -48,7 +53,7 @@ export default function LoginForm() {
         Login
       </button>
 
-      {/* 💡 Improvement: Display the error message to the user */}
+      
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>} 
     </form>
   );

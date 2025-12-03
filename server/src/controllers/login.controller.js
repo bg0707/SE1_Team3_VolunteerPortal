@@ -1,13 +1,15 @@
 import jwt from 'jsonwebtoken';
 import authenticateUser from '../services/login.service.js';
 import asyncHandler from 'express-async-handler';
+import Volunteer from '../models/volunteer.model.js';
+import Organization from '../models/organization.model.js';
 
 const loginController = asyncHandler(async (req, res) => {
 
     // Extract email and password from request body
     const email = req.body.email;
     const password = req.body.password;
-    
+
     console.log("Login body:", req.body);
 
     try {
@@ -16,7 +18,9 @@ const loginController = asyncHandler(async (req, res) => {
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined');
         }
-        
+
+
+
         // Authenticate user 
         let potentialUser;
         try {
@@ -33,6 +37,28 @@ const loginController = asyncHandler(async (req, res) => {
         }
 
         const user = potentialUser;
+
+        let extraData = {};
+
+        // Fetch extra info depending on role
+        if (user.role === 'volunteer') {
+            const volunteer = await Volunteer.findOne({ where: { userId: user.userId } });
+            if (volunteer) {
+                extraData = {
+                    fullName: volunteer.fullName,
+                    age: volunteer.age
+                };
+            }
+        } else if (user.role === 'organization') {
+            const organization = await Organization.findOne({ where: { userId: user.userId } });
+            if (organization) {
+                extraData = {
+                    organizationName: organization.organizationName,
+                    description: organization.description
+                };
+            }
+        }
+
 
         // Login successful, generate JWT token
         const token = jwt.sign(
@@ -54,7 +80,8 @@ const loginController = asyncHandler(async (req, res) => {
             user: {
                 userId: user.userId,
                 email: user.email,
-                role: user.role
+                role:user.role,
+                ...extraData
             }
         });
 
