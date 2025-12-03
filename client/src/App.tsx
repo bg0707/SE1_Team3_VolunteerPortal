@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Opportunities />} />
         <Route path="/opportunities" element={<Opportunities />} />
-        <Route path="/auth" element={<AuthenticationPage />} />
+        <Route path="/authentication" element={<AuthenticationPage />} />
  </Routes>
     </div>
   );

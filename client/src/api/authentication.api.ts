@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001/auth";
+const API_URL = "http://localhost:3001/authentication";
 
 export interface LoginResponse {
   message: string;
