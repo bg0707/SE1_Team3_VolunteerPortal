@@ -87,6 +87,8 @@ const VolunteerRegistrationForm: React.FC = () => {
         name="fullName"
         placeholder="Full Name"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.fullName}
+        onChange={handleChange}
       />
 
       <input
@@ -94,6 +96,8 @@ const VolunteerRegistrationForm: React.FC = () => {
         name="age"
         placeholder="Age"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.age ?? ""}
+        onChange={handleChange}
       />
 
       <input
@@ -101,6 +105,9 @@ const VolunteerRegistrationForm: React.FC = () => {
         name="email"
         placeholder="Email"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.email}
+        onChange={handleChange}
+
       />
 
       <input
@@ -108,6 +115,8 @@ const VolunteerRegistrationForm: React.FC = () => {
         name="password"
         placeholder="Password"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.password}
+        onChange={handleChange}
       />
 
       <button

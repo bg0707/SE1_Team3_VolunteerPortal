@@ -5,7 +5,7 @@ import { registerOrganization } from '../api/authentication.api.ts';
 
 // data that is being stored
 interface OrganizationData {
-  fullName: string;
+  organizationName: string;
   email: string;
   password: string;
   description: string;
@@ -14,7 +14,7 @@ interface OrganizationData {
 // initial values of the variables
 const initialData: OrganizationData = {
 
-  fullName: " ",
+  organizationName: " ",
   email: " ",
   password: " ",
   description: " "
@@ -28,7 +28,9 @@ const OrganizationRegistrationForm: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
 
     setFormData(prevData => ({
       ...prevData,
@@ -37,6 +39,18 @@ const OrganizationRegistrationForm: React.FC = () => {
     }));
   };
 
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const target = e.target; 
+  const name = target.name;
+  const value = target.value;
+
+  setFormData(prev => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -44,20 +58,20 @@ const OrganizationRegistrationForm: React.FC = () => {
     setSuccess(null);
 
     // Basic client-side validation check
-    if (!formData.email || !formData.password || !formData.fullName) {
+    if (!formData.email || !formData.password || !formData.organizationName) {
       setError("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
     try {
-      const { email, password, fullName, description } = formData;
+      const { email, password, organizationName, description } = formData;
 
 
       const data = await registerOrganization(
         email,
         password,
-        fullName,
+        organizationName,
         description
       );
 
@@ -80,15 +94,20 @@ const OrganizationRegistrationForm: React.FC = () => {
 
       <input
         type="text"
-        name="name"
+        name="organizationName"
         placeholder="Organization Name"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.organizationName}
+        onChange={handleChange}
       />
 
       <textarea
         name="description"
         placeholder="Description"
-        className="px-3 py-2 border border-gray-300 rounded-md h-24 resize-none"
+        className="px-3 py-2 border border-gray-300 rounded-md h-24 resize-none overflow-y-auto"
+        value={formData.description}
+        onChange={handleTextareaChange}
+        style={{ lineHeight: "1.5rem" }} // improves readability
       />
 
       <input
@@ -96,6 +115,8 @@ const OrganizationRegistrationForm: React.FC = () => {
         name="email"
         placeholder="Email"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.email}
+        onChange={handleChange}
       />
 
       <input
@@ -103,6 +124,8 @@ const OrganizationRegistrationForm: React.FC = () => {
         name="password"
         placeholder="Password"
         className="px-3 py-2 border border-gray-300 rounded-md"
+        value={formData.password}
+        onChange={handleChange}
       />
 
       <button

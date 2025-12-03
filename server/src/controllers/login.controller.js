@@ -7,19 +7,28 @@ const loginController = asyncHandler(async (req, res) => {
     // Extract email and password from request body
     const email = req.body.email;
     const password = req.body.password;
+    
+    console.log("Login body:", req.body);
 
     try {
 
         //  verify JWT_SECRET is defined
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined');
-        } 
+        }
         
         // Authenticate user 
-        const potentialUser = await authenticateUser(email, password);
+        let potentialUser;
+        try {
+            potentialUser = await authenticateUser(email, password);
+        } catch (err) {
+            console.log("Authenticate error:", err);
+            return res.status(500).json({ message: "Authentication failed", error: err.message });
+        }
+
 
         // Check for authentication errors
-        if(potentialUser.error){
+        if (potentialUser.error) {
             return res.status(401).json({ message: potentialUser.error });
         }
 
@@ -36,7 +45,7 @@ const loginController = asyncHandler(async (req, res) => {
             { expiresIn: '1h' }
         );
 
-          
+
 
         // Send response with token
         res.status(200).json({
@@ -48,13 +57,13 @@ const loginController = asyncHandler(async (req, res) => {
                 role: user.role
             }
         });
-        
+
     }
 
     catch (error) {
 
         console.log(error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: 'Server error11', error: error.message });
     }
 
 });
