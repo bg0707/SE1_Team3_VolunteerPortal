@@ -30,10 +30,10 @@ export default function OpportunityDetails() {
     return (
         <div className="max-w-screen-xl mx-auto mt-28 p-4">
             <h1>{opportunity.title}</h1>
+            <p>{opportunity.opportunityId}</p>
             <p>{opportunity.description}</p>
             <p>Location: {opportunity.location}</p>
             <p>Date: {opportunity.date}</p>
-            {/* etc. */}
         </div>
     );
 }
