@@ -9,6 +9,7 @@ export interface Opportunity {
   date: string;
   category?: { name: string };
   organization?: { name: string };
+  createdAt: string;
 }
 
 interface OpportunityCardProps {
