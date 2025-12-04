@@ -53,7 +53,7 @@ const loginController = asyncHandler(async (req, res) => {
             const organization = await Organization.findOne({ where: { userId: user.userId } });
             if (organization) {
                 extraData = {
-                    organizationName: organization.organizationName,
+                    organizationName: organization.name,
                     description: organization.description
                 };
             }

@@ -5,6 +5,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
+
     const isVolunteer = !!user.fullName;
     const isOrganization = !!user.organizationName;
 
@@ -36,6 +37,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
                 {isOrganization && (
                     <>
+                        
                         <p>Info: {user.description}</p>
                     </>
                 )}
