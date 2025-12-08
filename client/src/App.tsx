@@ -12,12 +12,14 @@ function App() {
       <NavBar />
 
       <Routes>
+
+        {/* Public pages */}
         <Route path="/" element={<Opportunities />} />
         <Route path="/opportunities" element={<Opportunities />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
 
- </Routes>
+      </Routes>
     </div>
   );
 }

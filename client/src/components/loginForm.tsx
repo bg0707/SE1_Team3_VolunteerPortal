@@ -20,7 +20,8 @@ export default function LoginForm({ onLoginSuccess }: LoginProps) {
       console.log("Logged in:", data);
       localStorage.setItem("token", data.token);
       onLoginSuccess(data.user);
-
+      
+      window.location.reload();
       
     } catch (err) {
       setError((err as Error).message);
