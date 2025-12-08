@@ -6,8 +6,10 @@ import loginController from "../controllers/login.controller.js";
 const router = express.Router();
 
 // login 
-router.post("/login",loginController);
-
+router.post("/login", (req, res, next) => {
+  console.log("Login route hit");
+  next();
+}, loginController);
 // register volunteer
 router.post("/register/volunteer", registerVolunteer);
 

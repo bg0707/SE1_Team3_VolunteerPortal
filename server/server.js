@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import opportunityRoutes from "./src/routes/opportunity.routes.js";
 import authenticationRoutes from "./src/routes/authentication.routes.js";
 import testConnection from "./tests/test-db.js";
 import applicationRoutes from "./src/routes/application.routes.js"
+
 
 const app = express();
 

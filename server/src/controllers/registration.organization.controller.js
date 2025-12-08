@@ -34,7 +34,7 @@ const registerOrganization = async (req, res) => {
       description,
     });
 
-    // Optional: Auto-login
+    // Auto-login
     const token = jwt.sign(
       {
         userId: newUser.userId,

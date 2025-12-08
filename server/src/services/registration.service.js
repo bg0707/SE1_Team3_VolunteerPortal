@@ -20,7 +20,7 @@ export const registerAccount = async(email, password) => {
     // create new registration
     const registration = await User.create({
         email : userEmail,
-        password : hashPassword,
+        password : hashedPassword,
         role : "volunteer",
         createdAt : new Date()
     
