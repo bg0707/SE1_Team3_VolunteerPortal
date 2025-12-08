@@ -1,4 +1,3 @@
-import Application from "../models/application.model.js";
 import { ApplicationService } from "../services/application.service.js";
 
 export class ApplicationController {

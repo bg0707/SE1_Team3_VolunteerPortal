@@ -31,7 +31,7 @@ const MyApplications = () => {
     );
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 pt-24">
       <h1 className="text-3xl font-bold mb-6">My Applications</h1>
 
       {applications.length === 0 ? (

@@ -9,13 +9,13 @@ router.post("/apply", ApplicationController.apply);
 // Get all applications of a volunteer
 router.get("/volunteer/:volunteerId", ApplicationController.getMyApplications);
 
-// Get application details
-router.get("/:applicationId", ApplicationController.getMyApplicationDetails);
+// // Get application details
+// router.get("/:applicationId", ApplicationController.getMyApplicationDetails);
 
-// Cancel an application
-router.delete("/:applicationId", ApplicationController.cancel);
+// // Cancel an application
+// router.delete("/:applicationId", ApplicationController.cancel);
 
-// Update application fields
-router.put("/:applicationId", ApplicationController.update);
+// // Update application fields
+// router.put("/:applicationId", ApplicationController.update);
 
 export default router;
