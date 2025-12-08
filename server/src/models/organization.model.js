@@ -31,6 +31,12 @@ Organization.init(
       allowNull: true,
     },
 
+    isVerified:{
+      type: DataTypes.BOOLEAN,
+      allowNull:false,
+      defaultValue: false
+    },
+
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

@@ -7,6 +7,8 @@ export interface LoginResponse {
     userId: number;
     email: string;
     role: string;
+    createdAt: Date;
+    isVerified: boolean;
   };
 }
 
@@ -59,14 +61,15 @@ export async function registerOrganization(
   email: string,
   password: string,
   organizationName: string,
-  description?: string
+  description?: string,
+
 ): Promise<LoginResponse> {
   const response = await fetch(`${API_URL}/register/organization`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password, organizationName, description }),
+    body: JSON.stringify({ email, password, organizationName, description}),
   });
 
   if (!response.ok) {

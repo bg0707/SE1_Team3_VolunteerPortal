@@ -46,7 +46,8 @@ const loginController = asyncHandler(async (req, res) => {
             if (volunteer) {
                 extraData = {
                     fullName: volunteer.fullName,
-                    age: volunteer.age
+                    age: volunteer.age,
+                    createdAt: volunteer.createdAt
                 };
             }
         } else if (user.role === 'organization') {
@@ -54,7 +55,9 @@ const loginController = asyncHandler(async (req, res) => {
             if (organization) {
                 extraData = {
                     organizationName: organization.name,
-                    description: organization.description
+                    description: organization.description,
+                    isVerified: organization.isVerified,
+                    createdAt: organization.createdAt
                 };
             }
         }

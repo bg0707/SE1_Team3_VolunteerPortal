@@ -31,10 +31,10 @@ const registerOrganization = async (req, res) => {
     await Organization.create({
       userId: newUser.userId,
       name: organizationName,
-      description,
+      description
     });
 
-    // Optional: Auto-login
+    // Auto-login
     const token = jwt.sign(
       {
         userId: newUser.userId,

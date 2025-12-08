@@ -5,7 +5,6 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
-
     const isVolunteer = !!user.fullName;
     const isOrganization = !!user.organizationName;
 
@@ -24,21 +23,33 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                     !
                 </h1>
 
-                {user.email && <p className="text-gray-600 mb-2">Email: {user.email}</p>}
-                {user.role && <p className="text-gray-600 mb-2">Role: {user.role}</p>}
+                {<p className="text-gray-600 mb-2"> 
+                    <span className="font-bold">Email: </span>{user.email}
+                </p>}
 
+                {<p className="text-gray-600 mb-2">
+                    <span className="font-bold"> Role: </span> {user.role}
+                </p>}
 
-                
                 {isVolunteer && (
                     <>
-                        <p>Age: {user.age}</p>
+                        <p className="text-gray-600 mb-2">
+                            <span className="font-bold">Age: </span>{user.age}
+                        </p>
                     </>
                 )}
 
                 {isOrganization && (
                     <>
                         
-                        <p>Info: {user.description}</p>
+                        <p className="text-gray-600 mb-2">
+                            <span className="font-bold">Description: </span> {user.description}
+                        </p>
+
+                        <p className="text-gray-600 mb-2">
+                            <span className="font-bold">isVerified: </span> {String(user.isVerified)}
+                        </p>
+
                     </>
                 )}
 
