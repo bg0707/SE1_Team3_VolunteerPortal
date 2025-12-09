@@ -3,6 +3,7 @@ import Opportunities from "./pages/Opportunities";
 import MyApplications from "./pages/MyApplications";
 import AuthenticationPage from "./pages/authenticationPage";
 import OpportunityDetails from "./pages/OpportunityDetails";
+import AdminPanel from "./pages/adminPanel";
 
 
 
@@ -22,7 +23,7 @@ function App() {
         <Route path="/my-applications" element={<MyApplications />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
-
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
 
     </div>
