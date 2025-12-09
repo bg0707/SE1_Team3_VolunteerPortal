@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import type { Application } from "../api/applications.api";
 
 interface Props {
@@ -9,10 +8,7 @@ const ApplicationCard = ({ application }: Props) => {
   const opport = application.opportunity;
 
   return (
-    <Link
-      to={`/applications/${application.applicationId}`}
-      className="block border border-gray-200 rounded-xl p-5 mb-4 shadow-sm hover:shadow-md transition"
-    >
+    <div className="border border-gray-200 rounded-xl p-5 mb-4 shadow-sm bg-white">
       <h3 className="text-xl font-semibold mb-1">{opport.title}</h3>
 
       <p className="text-gray-600">
@@ -26,14 +22,13 @@ const ApplicationCard = ({ application }: Props) => {
       </p>
 
       <p className="mt-2">
-        <span className="font-medium">Status:</span>{" "}
+      <span className="font-medium">Status:</span>{" "}
         <span className="font-bold capitalize text-blue-600">
           {application.status}
         </span>
       </p>
-    </Link>
+    </div>
   );
 };
-
 
 export default ApplicationCard;
