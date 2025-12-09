@@ -6,6 +6,7 @@ import cors from "cors";
 import opportunityRoutes from "./src/routes/opportunity.routes.js";
 import authenticationRoutes from "./src/routes/authentication.routes.js";
 import testConnection from "./tests/test-db.js";
+import applicationRoutes from "./src/routes/application.routes.js"
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors());
 // routes
 app.use("/opportunities", opportunityRoutes);
 app.use("/authentication", authenticationRoutes);
+app.use("/applications", applicationRoutes);
 
 // server listen 
 app.listen(3001, () => {

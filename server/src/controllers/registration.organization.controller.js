@@ -31,7 +31,7 @@ const registerOrganization = async (req, res) => {
     await Organization.create({
       userId: newUser.userId,
       name: organizationName,
-      description
+      description,
     });
 
     // Auto-login
