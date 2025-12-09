@@ -30,7 +30,7 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
 
 3. As an admin, I want to manage user accounts, so the website can be safe and functional. 
 
-4. As an admin, I want to check organizations against an external refistry so that onyl verified organizations can be in our website. 
+4. As an admin, I want to check organizations against an external register so that only verified organizations can be in our website. 
 
 **Nonprofit organizations**
 

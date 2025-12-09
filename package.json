@@ -9,5 +9,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "react-router-dom": "^7.9.6"
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3"
+  }
 }
