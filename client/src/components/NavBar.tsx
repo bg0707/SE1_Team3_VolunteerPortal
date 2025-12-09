@@ -77,7 +77,7 @@ export default function NavBar() {
             <li>
               <a
                 href="/opportunities"
-                className="block py-2 px-3 hover:text-fg-brand"
+                className="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary lg:hover:bg-transparent lg:hover:text-fg-brand lg:p-0"
               >
                 Browse Opportunities
               </a>

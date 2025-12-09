@@ -46,5 +46,75 @@ export const ApplicationService = {
         })
 
         return newApplication;
+    },
+
+    async getMyApplications(volunteerId) {
+        return await Application.findAll({
+            where: {volunteerId},
+            include: [
+                {
+                    model: Opportunity,
+                    as: "opportunity",
+                    include: [{ model: Organization, as: "organization"}]
+                }
+            ],
+            order: [[ "createdAt", "DESC"]],
+        });
+    },
+
+    async getMyApplicationDetails(applicationId) {
+        return await Application.findOne({
+            where: { applicationId}, 
+            include: [
+                {
+                    model: Opportunity, 
+                    as: "opportunity",
+                    include: [{ model: Organization, as: "organization"}]
+                }
+            ]
+        });
+    },
+
+    async cancel(applicationId, reason) {
+        const application = await Application.findByPk(applicationId, {
+            include: [
+                {
+                    model: Opportunity,
+                    as: "opportunity",
+                    include: [{ model: Organization, as: "organization"}]
+                }
+            ]
+        });
+
+        if(!application) {
+            return { error: "Application not found."};
+        }
+
+        if(application.status = "cancelled") {
+            return { error: "Application is already cancelled."};
+        }
+
+        application.status = "cancelled";
+        await application.save();
+
+        await Notification.create({
+            userId: application.opportunity.organization.userId,
+            message: `A volunteer cancelled their application for "${app.opportunity.title}".`,
+        });
+
+        return application;
+    },
+
+    async update(applicationId, data) {
+        const application = await Application.findByPk(applicationId);
+
+        if(!application) {
+            return {error: "Application not found."};
+        }
+
+        Object.assign(application, data);
+        await application.save();
+
+        return application;
     }
 }
