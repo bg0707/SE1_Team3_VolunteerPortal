@@ -86,7 +86,7 @@ export default function NavBar() {
             {/* Volunteers only */}
             {user?.role === "volunteer" && (
               <li>
-                <a href="#" className="block py-2 px-3 hover:text-fg-brand">
+                <a href="/my-applications" className="block py-2 px-3 hover:text-fg-brand">
                   My Applications
                 </a>
               </li>

@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 import ApplicationCard from "../components/ApplicationCard";
+
 import type { Application } from "../api/applications.api";
 import { fetchApplicationsByVolunteer } from "../api/applications.api";
 
+import { useAuth } from "../context/AuthContext";
+
 const MyApplications = () => {
+  const { user } = useAuth(); // ← Get logged-in user
+
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // TEMPORARY — will be replaced by AuthContext later
-  const volunteerId = Number(localStorage.getItem("volunteerId"));
 
   useEffect(() => {
     const loadApps = async () => {
       try {
+        // If user is not logged in OR not a volunteer → stop
+        if (!user || user.role !== "volunteer") {
+          setLoading(false);
+          return;
+        }
+
+        const volunteerId = user.userId;
+
         const data = await fetchApplicationsByVolunteer(volunteerId);
         setApplications(data);
       } catch (err) {
@@ -23,12 +33,24 @@ const MyApplications = () => {
     };
 
     loadApps();
-  }, [volunteerId]);
+  }, [user]);
 
-  if (loading)
+  if (loading) {
     return (
-      <p className="text-center text-gray-500 mt-10">Loading applications...</p>
+      <p className="text-center text-gray-500 mt-10">
+        Loading applications...
+      </p>
     );
+  }
+
+  // Not logged in OR wrong role
+  if (!user || user.role !== "volunteer") {
+    return (
+      <p className="text-center text-red-500 mt-10">
+        You must be logged in as a volunteer to view applications.
+      </p>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 pt-24">
