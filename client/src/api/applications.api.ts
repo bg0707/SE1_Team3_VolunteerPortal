@@ -15,11 +15,37 @@ export interface Opportunity {
   organization: Organization;
 }
 
+export interface User {
+  userId: number;
+  email: string;
+}
+
+export interface Volunteer {
+  volunteerId: number;
+  fullName: string;
+  user: User;
+}
+
 export interface Application {
   applicationId: number;
   status: "pending" | "accepted" | "rejected" | "cancelled";
   createdAt: string;
   opportunity: Opportunity;
+  volunteer?: Volunteer;
+}
+
+export async function fetchApplicationsByOpportunity(opportunityId: number) {
+  const res = await fetch(`${API_URL}/opportunity/${opportunityId}`);
+  return res.json();
+}
+
+export async function reviewApplication(applicationId: number, decision: "accepted" | "rejected") {
+  const res = await fetch(`${API_URL}/${applicationId}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ decision }),
+  });
+  return res.json();
 }
 
 // Fetch all applications for a volunteer 

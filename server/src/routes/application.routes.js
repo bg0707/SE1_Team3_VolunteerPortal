@@ -3,6 +3,9 @@ import { ApplicationController } from "../controllers/application.controller.js"
 
 const router = express.Router();
 
+router.get("/opportunity/:opportunityId", ApplicationController.listByOpportunity);
+router.patch("/:applicationId/status", ApplicationController.review);
+
 // Create a new application
 router.post("/apply", ApplicationController.apply);
 

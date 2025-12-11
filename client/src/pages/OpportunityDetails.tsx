@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { fetchOpportunityById } from "../api/opportunity.api";
 import type { Opportunity } from "../components/OpportunityCard";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import OpportunityApplicants from "./OpportunityApplicants";
 
 export default function OpportunityDetails() {
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -98,11 +101,21 @@ export default function OpportunityDetails() {
           </section>
 
           {/* CENTERED APPLY BUTTON */}
-          <div className="flex justify-center mt-6">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-xl font-semibold shadow">
-              Apply / Join Opportunity
-            </button>
-          </div>
+          {user?.role === "volunteer" && (
+            <div className="flex justify-center mt-6">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-xl font-semibold shadow">
+                Apply / Join Opportunity
+              </button>
+            </div>
+          )}
+
+          {/* APPLICANTS LIST - Only visible to organization admins */}
+          {user?.role === "organization" && opportunity && (
+            <section className="bg-white p-5 rounded-xl shadow border mt-8">
+              <h2 className="text-xl font-semibold mb-4">Applicants</h2>
+              <OpportunityApplicants opportunityId={opportunity.opportunityId} />
+            </section>
+          )}
         </div>
       </div>
     </div>

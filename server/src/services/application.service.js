@@ -3,8 +3,51 @@ import Opportunity from "../models/opportunity.model.js"
 import Volunteer from "../models/volunteer.model.js"
 import Notification from "../models/notification.model.js"
 import Organization from "../models/organization.model.js";
+import User from "../models/user.model.js";
 
 export const ApplicationService = {
+
+    async listByOpportunity(opportunityId) {
+        return Application.findAll({
+            where: { opportunityId },
+            include: [
+                {
+                model: Volunteer,
+                as: "volunteer",
+                include: [{ model: User, as: "user" }], // need email
+                },
+            ],
+            order: [["createdAt", "DESC"]],
+        });
+    },
+
+    async review(applicationId, decision) {
+        if (!["accepted", "rejected"].includes(decision)) {
+            return { error: "Invalid decision" };
+        }
+
+        const application = await Application.findByPk(applicationId, {
+          include: [
+            {
+              model: Volunteer,
+              as: "volunteer",
+              include: [{ model: User, as: "user" }],
+            },
+          ],
+        });
+
+        if (!application) {
+            return { error: "Application not found." };
+        }
+
+        application.status = decision;
+        await application.save();
+
+        // Optional: create notification to volunteer.userId
+        // await Notification.create({ userId: application.volunteer.user.userId, message: `Application ${decision}.` });
+
+        return application;
+      },
 
     async apply(volunteerId, opportunityId) {
 

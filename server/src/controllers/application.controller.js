@@ -2,6 +2,30 @@ import { ApplicationService } from "../services/application.service.js";
 
 export class ApplicationController {
 
+    static async listByOpportunity(req, res) {
+        try {
+            const { opportunityId } = req.params;
+            const data = await ApplicationService.listByOpportunity(opportunityId);
+            return res.json(data);
+        } catch (err) {
+            console.error("List applications by opportunity error:", err);
+            res.status(500).json({ message: "Server error", error: err.message });
+        }
+    }
+
+    static async review(req, res) {
+        try {
+            const { applicationId } = req.params;
+            const { decision } = req.body; // "accepted" | "rejected"
+            const result = await ApplicationService.review(applicationId, decision);
+            if (result.error) return res.status(400).json({ message: result.error });
+            return res.json({ message: "Application reviewed.", application: result });
+        } catch (err) {
+            console.error("Review application error:", err);
+            res.status(500).json({ message: "Server error", error: err.message });
+        }
+    }
+
     static async apply(req, res) {
 
         try {
