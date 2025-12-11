@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 interface Organization {
   organizationId: number;
   email: string;
-  organizationName: string;
+  name: string;
   description: string;
 }
 
@@ -26,9 +26,9 @@ export default function AdminPanel() {
 
     setPendingOrgs((prev) => prev.filter(org => org.organizationId !== id));
   }
-
+  // every organization creates one component
   return (
-    <div className="p-6">
+    <div className="p-6 mt-20">
       <h1 className="text-2xl font-bold mb-4">Pending Organizations</h1>
 
       {pendingOrgs.length === 0 && <p>No pending organizations 🎉</p>}

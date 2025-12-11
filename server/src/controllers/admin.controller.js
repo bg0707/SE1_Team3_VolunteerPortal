@@ -1,4 +1,6 @@
+import { where } from "sequelize";
 import Organization from "../models/organization.model.js";
+
 
 // GET all non verified organizations
 export const getPendingOrganizations = async (req, res) => {
@@ -6,7 +8,7 @@ export const getPendingOrganizations = async (req, res) => {
     
     console.log("Fetching pending organizations...");
     const pending = await Organization.findAll({
-      where: { isVerified: false }   // Sequelize uses `where` clause
+      where: { isVerified: false } 
       });
     res.status(200).json(pending);
   } catch (err) {
@@ -20,18 +22,21 @@ export const verifyOrganization = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("Verify organization ID:", id); 
-    const org = await Organization.findByIdAndUpdate(
-      id,
-      { isVerified: true },
-      { new: true }
-    );
+    const org = await Organization.findOne({
+      where : {organizationId : id}
+    });
 
     if (!org) 
         return res.status(404).json({ message: "Organization not found" });
+    
+    await Organization.update(
+      { isVerified: true },
+      { where: { organizationId: id } }
+    );
 
     res.status(200).json({
       message: "Organization verified successfully",
-      org
+      updated: { organizationId: id, isVerified: true }
     });
   } catch (err) {
     console.error("Error verifying organization:", err);

@@ -1,7 +1,7 @@
 interface Organization {
   organizationId: number;
   email: string;
-  organizationName: string;
+  name: string;
   description: string;
 }
 
@@ -10,13 +10,14 @@ interface Props {
   onVerify: (id: number) => void;
 }
 
+// display the pending Organizations as a component 
 export default function PendingOrganization({ org, onVerify }: Props) {
   return (
     <div className="p-4 border rounded-lg shadow-sm bg-white flex justify-between items-center mb-3">
 
       <div>
-        <h2 className="font-bold text-lg">{org.organizationName}</h2>
-        <p className="text-gray-600 text-sm">{org.email}</p>
+        <h2 className="font-bold text-lg">Name: {org.name}</h2>
+        <p className="text-gray-600 text-sm">Description:{org.email}</p>
         <p className="text-gray-800 mt-1">{org.description}</p>
       </div>
 
