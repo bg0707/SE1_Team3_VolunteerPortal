@@ -7,7 +7,7 @@ export interface Opportunity {
   description: string;
   location: string;
   date: string;
-  category?: { name: string };
+  category?: { categoryId: number; name: string };
   organization?: { name: string };
   createdAt: string;
 }

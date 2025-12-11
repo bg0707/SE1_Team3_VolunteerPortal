@@ -3,6 +3,8 @@ import Opportunities from "./pages/Opportunities";
 import MyApplications from "./pages/MyApplications";
 import AuthenticationPage from "./pages/authenticationPage";
 import OpportunityDetails from "./pages/OpportunityDetails";
+import ManageOpportunities from "./pages/ManageOpportunities";
+import Unauthorized from "./pages/Unauthorized";
 
 
 
@@ -22,6 +24,10 @@ function App() {
         <Route path="/my-applications" element={<MyApplications />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
+        {/* Organization Management */}
+        <Route path="/manage-opportunities" element={<ManageOpportunities />} />
+        {/* Error pages */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
       </Routes>
 
