@@ -28,11 +28,22 @@ export async function fetchApplicationsByVolunteer(volunteerId: number): Promise
   return response.json();
 }
 
-// Fetch details of a single application
-export async function fetchApplicationById(applicationId: number): Promise<Application> {
-  const response = await fetch(`${API_URL}/${applicationId}`);
+// Apply to an opportunity
+export async function applyToOpportunity(volunteerId: number, opportunityId: number): Promise<Application> {
+  const response = await fetch(`${API_URL}/apply`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ volunteerId, opportunityId }),
+  });
+
   return response.json();
 }
+
+// // Fetch details of a single application
+// export async function fetchApplicationById(applicationId: number): Promise<Application> {
+//   const response = await fetch(`${API_URL}/${applicationId}`);
+//   return response.json();
+// }
 
 // // Cancel application
 // export async function cancelApplication(applicationId: number, reason?: string): Promise<Application> {
