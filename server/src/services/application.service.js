@@ -1,7 +1,6 @@
 import Application from "../models/application.model.js"
 import Opportunity from "../models/opportunity.model.js"
 import Volunteer from "../models/volunteer.model.js"
-import Notification from "../models/notification.model.js"
 import Organization from "../models/organization.model.js";
 
 export const ApplicationService = {
@@ -42,7 +41,6 @@ export const ApplicationService = {
     return newApplication;
 },
 
-
     async getMyApplications(userId) {
 
     // 1. Find volunteer using userId
@@ -68,59 +66,4 @@ export const ApplicationService = {
     });
     },
 
-    async getMyApplicationDetails(applicationId) {
-        return await Application.findOne({
-            where: { applicationId}, 
-            include: [
-                {
-                    model: Opportunity, 
-                    as: "opportunity",
-                    include: [{ model: Organization, as: "organization"}]
-                }
-            ]
-        });
-    },
-
-    async cancel(applicationId, reason) {
-        const application = await Application.findByPk(applicationId, {
-            include: [
-                {
-                    model: Opportunity,
-                    as: "opportunity",
-                    include: [{ model: Organization, as: "organization"}]
-                }
-            ]
-        });
-
-        if(!application) {
-            return { error: "Application not found."};
-        }
-
-        if(application.status = "cancelled") {
-            return { error: "Application is already cancelled."};
-        }
-
-        application.status = "cancelled";
-        await application.save();
-
-        await Notification.create({
-            userId: application.opportunity.organization.userId,
-            message: `A volunteer cancelled their application for "${app.opportunity.title}".`,
-        });
-
-        return application;
-    },
-
-    async update(applicationId, data) {
-        const application = await Application.findByPk(applicationId);
-
-        if(!application) {
-            return {error: "Application not found."};
-        }
-
-        Object.assign(application, data);
-        await application.save();
-
-        return application;
-    }
 }
