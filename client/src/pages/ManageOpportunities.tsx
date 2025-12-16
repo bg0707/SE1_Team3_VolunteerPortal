@@ -9,9 +9,11 @@ import {
 } from "../api/opportunity.api";
 import { fetchCategories, type Category } from "../api/category.api";
 import type { Opportunity } from "../components/OpportunityCard";
+import OpportunityForm from "../components/OpportunityForm";
+import OpportunityCardItem from "../components/OpportunityCardItem";
 import { useNavigate } from "react-router-dom";
 
-/* Unified change event */
+/* unified change event type */
 type FormChangeEvent =
   | React.ChangeEvent<HTMLInputElement>
   | React.ChangeEvent<HTMLTextAreaElement>
@@ -21,12 +23,10 @@ export default function ManageOpportunities() {
   const { token } = useAuth();
   const navigate = useNavigate();
 
-  /* ---------- DATA ---------- */
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  /* ---------- FORM ---------- */
   const [showForm, setShowForm] = useState(false);
   const [editingOpportunity, setEditingOpportunity] =
     useState<Opportunity | null>(null);
@@ -39,12 +39,10 @@ export default function ManageOpportunities() {
     categoryId: undefined,
   });
 
-  /* ---------- UX ---------- */
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  /* ---------- LOAD ---------- */
   useEffect(() => {
     if (!token) return;
     loadOpportunities();
@@ -71,9 +69,9 @@ export default function ManageOpportunities() {
     }
   };
 
-  /* ---------- HANDLERS ---------- */
   const handleInputChange = (e: FormChangeEvent) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value === "" ? undefined : value,
@@ -134,17 +132,18 @@ export default function ManageOpportunities() {
     setError(null);
   };
 
-  const handleEdit = (opp: Opportunity) => {
+  const handleEdit = (opportunity: Opportunity) => {
     setFormData({
-      title: opp.title,
-      description: opp.description,
-      location: opp.location || "",
-      date: opp.date
-        ? new Date(opp.date).toISOString().slice(0, 16)
+      title: opportunity.title,
+      description: opportunity.description,
+      location: opportunity.location || "",
+      date: opportunity.date
+        ? new Date(opportunity.date).toISOString().slice(0, 16)
         : "",
-      categoryId: opp.category?.categoryId,
+      categoryId: opportunity.category?.categoryId,
     });
-    setEditingOpportunity(opp);
+
+    setEditingOpportunity(opportunity);
     setShowForm(true);
   };
 
@@ -153,7 +152,9 @@ export default function ManageOpportunities() {
 
     try {
       await deleteOpportunity(id, token!);
+      setSuccessMessage("Opportunity deleted successfully!");
       await loadOpportunities();
+      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err: any) {
       setError(err.message || "Failed to delete opportunity");
     }
@@ -162,142 +163,65 @@ export default function ManageOpportunities() {
   /* ---------- RENDER ---------- */
   return (
     <div className="max-w-5xl mx-auto mt-28 p-6">
+      {/* HEADER */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Manage Opportunities</h1>
 
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-xl font-semibold"
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-xl font-semibold shadow"
           >
             + New Opportunity
           </button>
         )}
       </div>
 
-      {error && (
-        <div className="mb-6 bg-red-100 text-red-800 px-4 py-3 rounded-xl">
-          {error}
+      {/* FEEDBACK */}
+      {successMessage && (
+        <div className="mb-6 bg-green-100 text-green-800 px-4 py-3 rounded-xl border">
+          {successMessage}
         </div>
       )}
 
-      {successMessage && (
-        <div className="mb-6 bg-green-100 text-green-800 px-4 py-3 rounded-xl">
-          {successMessage}
+      {error && !showForm && (
+        <div className="mb-6 bg-red-100 text-red-800 px-4 py-3 rounded-xl border">
+          {error}
         </div>
       )}
 
       {/* FORM */}
       {showForm && (
-        <form
+        <OpportunityForm
+          formData={formData}
+          categories={categories}
+          isEditing={!!editingOpportunity}
+          isSubmitting={isSubmitting}
+          onChange={handleInputChange}
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-xl shadow border mb-10 space-y-4"
-        >
-          <input
-            name="title"
-            placeholder="Title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded"
-            required
-          />
-
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded"
-            rows={4}
-            required
-          />
-
-          <input
-            name="location"
-            placeholder="Location"
-            value={formData.location}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded"
-          />
-
-          <input
-            type="datetime-local"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded"
-          />
-
-          <select
-            name="categoryId"
-            value={formData.categoryId ?? ""}
-            onChange={handleInputChange}
-            className="w-full border px-4 py-2 rounded"
-          >
-            <option value="">Select category</option>
-            {categories.map((c) => (
-              <option key={c.categoryId} value={c.categoryId}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-600 text-white px-6 py-2 rounded"
-            >
-              {editingOpportunity ? "Update" : "Create"}
-            </button>
-
-            <button
-              type="button"
-              onClick={resetForm}
-              className="border px-6 py-2 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+          onCancel={resetForm}
+        />
       )}
 
       {/* LIST */}
-      {isLoading ? (
-        <p className="text-center py-10">Loading...</p>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {opportunities.map((opp) => (
-            <div
-              key={opp.opportunityId}
-              className="bg-white p-5 rounded-xl shadow border"
-            >
-              <h3 className="text-xl font-semibold">{opp.title}</h3>
-              <p className="text-gray-600 mt-2">{opp.description}</p>
+      <h2 className="text-2xl font-semibold mb-6">My Opportunities</h2>
 
-              <div className="flex gap-4 mt-4 text-sm">
-                <button
-                  onClick={() =>
-                    navigate(`/opportunities/${opp.opportunityId}`)
-                  }
-                  className="text-blue-600"
-                >
-                  View
-                </button>
-                <button
-                  onClick={() => handleEdit(opp)}
-                  className="text-gray-700"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(opp.opportunityId)}
-                  className="text-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+      {isLoading ? (
+        <p className="text-center text-gray-600 py-10">
+          Loading opportunities...
+        </p>
+      ) : opportunities.length === 0 ? (
+        <p className="text-center text-gray-600 py-10">No opportunities yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {opportunities.map((opp) => (
+            <OpportunityCardItem
+              key={opp.opportunityId}
+              opportunity={opp}
+              onView={() => navigate(`/opportunities/${opp.opportunityId}`)}
+              onEdit={() => handleEdit(opp)}
+              onDelete={() => handleDelete(opp.opportunityId)}
+            />
           ))}
         </div>
       )}
