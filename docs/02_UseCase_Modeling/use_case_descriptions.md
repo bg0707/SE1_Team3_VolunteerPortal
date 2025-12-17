@@ -416,16 +416,35 @@ View, review, and decide whether to accept volunteer applications to ensure appr
 6. The system automatically sends a notification email or internal message to the volunteer, informing them of the review outcome.
 
 
-## UC-14 - Manage Applications
-**Actors:** Volunteer
 
-**Description:** View submitted applications, check status, cancel or modify applications, and review upcoming event details.
 
-**Preconditions**
-- The volunteer has logged in.
-- The volunteer has submitted at least one application.
+# UC14
+---
 
-**Main Succes Scenario**
+## Name
+Manage Applications
+
+## Actors
+Volunteer
+
+## Goal
+View submitted applications, check status, cancel or modify applications, and review upcoming event details.
+
+## Preconditions
+1. The volunteer has logged in.
+2. The volunteer has submitted at least one application.
+
+## Postconditions
+
+**If succeeded:**
+1. Changes made (cancellations/updated preferences/selected time slots, etc.) have been saved.
+2. The list and status have been synchronized.
+3. Required notifications have been sent.
+
+**If failed:**
+1. No changes, provide the volunteer with understandable error messages.
+
+## Workflow
 1. Volunteers open the “My Applications” module.
 2. The system displays the application list by time/status (event name, organization, date, location, current status: Pending/Approved/Rejected, etc.).
 3. Volunteers click any application to view details (event time, meeting point, contact person, application fields/preferences).
@@ -437,14 +456,8 @@ View, review, and decide whether to accept volunteer applications to ensure appr
 6. The system saves changes and refreshes the list and detail statuses.
 7. The system sends a confirmation notification to the volunteer and (if required) notifies the event's organizing administrator.
 
-**Postconditions**
-**If succeeded:**
-- Changes made (cancellations/updated preferences/selected time slots, etc.) have been saved.
-- The list and status have been synchronized.
-- Required notifications have been sent.
+## Exception Flows
+1. The operation is illegal.
 
-**If failed:**
-- No changes, provide the volunteer with understandable error messages.
 
-**Exception Flows**
-- The operation is illegal.
+
