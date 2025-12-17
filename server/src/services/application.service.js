@@ -1,7 +1,6 @@
 import Application from "../models/application.model.js";
 import Opportunity from "../models/opportunity.model.js";
 import Volunteer from "../models/volunteer.model.js";
-import Notification from "../models/notification.model.js";
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
 
