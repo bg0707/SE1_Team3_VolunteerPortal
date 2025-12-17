@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import authenticateUser from '../services/login.service.js';
 import asyncHandler from 'express-async-handler';
+import Volunteer from '../models/volunteer.model.js';
+import Organization from '../models/organization.model.js';
 
 const loginController = asyncHandler(async (req, res) => {
 
@@ -8,22 +10,58 @@ const loginController = asyncHandler(async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+
     try {
 
         //  verify JWT_SECRET is defined
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined');
-        } 
-        
+        }
+
+
+
         // Authenticate user 
-        const potentialUser = await authenticateUser(email, password);
+        let potentialUser;
+        try {
+            potentialUser = await authenticateUser(email, password);
+        } catch (err) {
+            console.log("Authenticate error:", err);
+            return res.status(500).json({ message: "Authentication failed", error: err.message });
+        }
+
 
         // Check for authentication errors
-        if(potentialUser.error){
+        if (potentialUser.error) {
             return res.status(401).json({ message: potentialUser.error });
         }
 
         const user = potentialUser;
+
+        let extraData = {};
+
+        // Fetch extra info depending on role
+        if (user.role === 'volunteer') {
+            const volunteer = await Volunteer.findOne({ where: { userId: user.userId } });
+            if (volunteer) {
+                extraData = {
+                    fullName: volunteer.fullName,
+                    age: volunteer.age,
+                    createdAt: volunteer.createdAt
+                };
+            }
+        } else if (user.role === 'organization') {
+
+            const organization = await Organization.findOne({ where: { userId: user.userId } });
+            if (organization) {
+                extraData = {
+                    organizationName: organization.name,
+                    description: organization.description,
+                    isVerified: organization.isVerified,
+                    createdAt: organization.createdAt
+                };
+            }
+        }
+
 
         // Login successful, generate JWT token
         const token = jwt.sign(
@@ -36,7 +74,7 @@ const loginController = asyncHandler(async (req, res) => {
             { expiresIn: '1h' }
         );
 
-          
+
 
         // Send response with token
         res.status(200).json({
@@ -45,16 +83,17 @@ const loginController = asyncHandler(async (req, res) => {
             user: {
                 userId: user.userId,
                 email: user.email,
-                role: user.role
+                role:user.role,
+                ...extraData
             }
         });
-        
+
     }
 
     catch (error) {
 
         console.log(error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: 'Server error11', error: error.message });
     }
 
 });

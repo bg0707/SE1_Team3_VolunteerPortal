@@ -6,7 +6,7 @@ import OpportunityDetails from "./pages/OpportunityDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 import AdminPanel from "./pages/AdminPanel";
-
+import UserDashboard from "./pages/UserDashboard";
 
 import NavBar from "./components/NavBar";
 
@@ -22,6 +22,7 @@ function App() {
         <Route path="/opportunities" element={<Opportunities />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
 
         {/* Protected Routes */}
         <Route path="/my-applications" element={

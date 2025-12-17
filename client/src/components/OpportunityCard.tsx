@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
+import {BadgeCheck} from "lucide-react";
 
 export interface Opportunity {
   opportunityId: number;
@@ -8,7 +9,7 @@ export interface Opportunity {
   location: string;
   date: string;
   category?: { name: string };
-  organization?: { name: string };
+  organization?: { name: string, isVerified: boolean };
   createdAt: string;
 }
 
@@ -36,6 +37,12 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity }) => {
       <p className="text-body text-sm mb-2">
         <span className="font-medium">Organization:</span>{" "}
         {opportunity.organization?.name}
+
+        {opportunity.organization?.isVerified && (
+          <span title="Verified Organization">
+            <BadgeCheck className="inline-block ml-1 text-blue-500" size={16} />
+          </span>
+        )}
       </p>
 
       {/* Category */}
