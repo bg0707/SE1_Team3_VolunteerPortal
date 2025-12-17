@@ -105,7 +105,7 @@ export default function NavBar() {
             {user?.role === "admin" && (
               <li>
                 <a
-                  href="#"
+                  href="/admin"
                   className="block py-2 px-3 hover:text-fg-brand"
                 >
                   Admin Panel

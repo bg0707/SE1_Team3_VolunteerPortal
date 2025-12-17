@@ -6,8 +6,9 @@ import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
 
 export const ApplicationService = {
+
   async listByOpportunity(opportunityId, userId) {
-    // 1. Find organization linked to this user
+    // Find organization for this user
     const organization = await Organization.findOne({
       where: { userId },
     });
@@ -16,7 +17,7 @@ export const ApplicationService = {
       throw new Error("Organization not found");
     }
 
-    // 2. Verify opportunity ownership
+    // Verify ownership of opportunity
     const opportunity = await Opportunity.findOne({
       where: {
         opportunityId,
@@ -25,10 +26,10 @@ export const ApplicationService = {
     });
 
     if (!opportunity) {
+      // Not owner → see nothing
       return [];
     }
 
-    // 3. Fetch applications
     return Application.findAll({
       where: { opportunityId },
       include: [
@@ -42,6 +43,7 @@ export const ApplicationService = {
     });
   },
 
+ 
   async reviewForOrganization(applicationId, decision, organizationUserId) {
     if (!["accepted", "rejected"].includes(decision)) {
       throw new Error("Invalid decision");
@@ -70,6 +72,7 @@ export const ApplicationService = {
       throw new Error("Unauthorized or application not found");
     }
 
+    // 🔒 Final decision protection
     if (application.status !== "pending") {
       throw new Error(
         `Application already ${application.status}. Review is final.`
@@ -79,51 +82,58 @@ export const ApplicationService = {
     application.status = decision;
     await application.save();
 
+    // Optional notification to volunteer
+    // await Notification.create({
+    //   userId: application.volunteer.user.userId,
+    //   message: `Your application was ${decision}.`,
+    // });
+
     return application;
   },
 
-  async apply(volunteerId, opportunityId) {
-    // First check if the volunteer exists
-    const hasVolunteer = await Volunteer.findByPk(volunteerId);
 
-    if (!hasVolunteer) {
+  async apply(userId, opportunityId) {
+    // Find volunteer via userId
+    const volunteer = await Volunteer.findOne({ where: { userId } });
+
+    if (!volunteer) {
       return { error: "Volunteer not found" };
     }
 
-    // Check if opportunity in question exists
-    const hasOpportunity = await Opportunity.findByPk(opportunityId);
-
-    if (!hasOpportunity) {
+    // Check opportunity
+    const opportunity = await Opportunity.findByPk(opportunityId);
+    if (!opportunity) {
       return { error: "Opportunity not found." };
     }
 
-    // Check for duplication application
-    const hasDoubleApplication = await Application.findOne({
-      where: { volunteerId, opportunityId },
+    // Prevent duplicate applications
+    const existing = await Application.findOne({
+      where: { volunteerId: volunteer.volunteerId, opportunityId },
     });
 
-    if (hasDoubleApplication) {
+    if (existing) {
       return { error: "You have already applied to this opportunity." };
     }
 
-    // Create Application
-    const newApplication = await Application.create({
-      volunteerId,
+    const application = await Application.create({
+      volunteerId: volunteer.volunteerId,
       opportunityId,
       status: "pending",
     });
 
-    await Notification.create({
-      userId: organization.userId,
-      message: `New application for the opportunity "${Opportunity.title}".`,
-    });
-
-    return newApplication;
+    return application;
   },
 
-  async getMyApplications(volunteerId) {
-    return await Application.findAll({
-      where: { volunteerId },
+
+  async getMyApplications(userId) {
+    const volunteer = await Volunteer.findOne({ where: { userId } });
+
+    if (!volunteer) {
+      return [];
+    }
+
+    return Application.findAll({
+      where: { volunteerId: volunteer.volunteerId },
       include: [
         {
           model: Opportunity,
@@ -134,6 +144,7 @@ export const ApplicationService = {
       order: [["createdAt", "DESC"]],
     });
   },
+
 
   async update(applicationId, data) {
     const application = await Application.findByPk(applicationId);
@@ -148,3 +159,4 @@ export const ApplicationService = {
     return application;
   },
 };
+

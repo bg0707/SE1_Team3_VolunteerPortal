@@ -54,7 +54,6 @@ export async function fetchApplicationsByOpportunity(
   return res.json();
 }
 
-
 export async function reviewApplication(
   applicationId: number,
   decision: "accepted" | "rejected",
@@ -95,3 +94,14 @@ export async function fetchApplicationsByVolunteer(
 
   return res.json();
 }
+// Apply to an opportunity
+export async function applyToOpportunity(volunteerId: number, opportunityId: number): Promise<Application> {
+  const response = await fetch(`${API_URL}/apply`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ volunteerId, opportunityId }),
+  });
+
+  return response.json();
+}
+
