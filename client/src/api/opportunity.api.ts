@@ -1,16 +1,146 @@
 import type { Opportunity } from "../components/OpportunityCard";
 
-const API_URL = "http://localhost:3001/opportunities";
+const BASE_URL = "http://localhost:3001";
+const API_URL = `${BASE_URL}/opportunities`;
 
-// Function to fetch all the opportunities based on different filets if any 
-export async function fetchOpportunities(filters: Record<string, any>): Promise<Opportunity[]> {
-  const params = new URLSearchParams(filters).toString();
+
+// Helper: Authorization headers
+function authHeaders(token?: string): HeadersInit {
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
+}
+
+/* =========================
+   Fetch all opportunities (public)
+   ========================= */
+export async function fetchOpportunities(
+  filters: Record<string, any> = {}
+): Promise<Opportunity[]> {
+  const params = new URLSearchParams(
+    Object.entries(filters)
+      .filter(([, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => [key, String(value)])
+  ).toString();
+
   const response = await fetch(`${API_URL}?${params}`);
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to fetch opportunities");
+  }
+
   return response.json();
 }
 
-// fetch the opportunity based on a specific id 
+/* =========================
+   Fetch opportunity by ID (public)
+   ========================= */
 export async function fetchOpportunityById(id: number): Promise<Opportunity> {
   const response = await fetch(`${API_URL}/${id}`);
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to fetch opportunity");
+  }
+
   return response.json();
+}
+
+/* =========================
+   Types
+   ========================= */
+export interface CreateOpportunity {
+  title: string;
+  description: string;
+  location?: string;
+  date?: string;
+  categoryId?: number;
+}
+
+/* =========================
+   Create opportunity (organization)
+   ========================= */
+export async function createOpportunity(
+  opportunity: CreateOpportunity,
+  token?: string
+): Promise<Opportunity> {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(opportunity),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to create opportunity");
+  }
+
+  const result = await response.json();
+  return result.opportunity;
+}
+
+/* =========================
+   Fetch my opportunities (organization)
+   ========================= */
+export async function fetchMyOpportunities(
+  token?: string
+): Promise<Opportunity[]> {
+  const response = await fetch(`${API_URL}/my-opportunities`, {
+    headers: authHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to fetch my opportunities");
+  }
+
+  return response.json();
+}
+
+/* =========================
+   Update opportunity (organization)
+   ========================= */
+export async function updateOpportunity(
+  opportunityId: number,
+  opportunity: CreateOpportunity,
+  token?: string
+): Promise<Opportunity> {
+  const response = await fetch(`${API_URL}/${opportunityId}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify(opportunity),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to update opportunity");
+  }
+
+  const result = await response.json();
+  return result.opportunity;
+}
+
+/* =========================
+   Delete opportunity (organization)
+   ========================= */
+export async function deleteOpportunity(
+  opportunityId: number,
+  token?: string
+): Promise<void> {
+  const response = await fetch(`${API_URL}/${opportunityId}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to delete opportunity");
+  }
 }

@@ -1,45 +1,81 @@
-import { where } from "sequelize";
-import Organization from "../models/organization.model.js";
 
+import { AdminService } from "../services/admin.service.js";
 
-// GET all non verified organizations
-export const getPendingOrganizations = async (req, res) => {
-  try {
-    
-    console.log("Fetching pending organizations...");
-    const pending = await Organization.findAll({
-      where: { isVerified: false } 
-      });
-    res.status(200).json(pending);
-  } catch (err) {
-    console.error("Error fetching pending organizations:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
+export const AdminController = {
+  async getReportedOpportunities(req, res) {
+    try {
+      const data = await AdminService.getReportedOpportunities();
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin getReportedOpportunities error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
 
-// PATCH verify an organization
-export const verifyOrganization = async (req, res) => {
-  try {
-    const { id } = req.params;
-    console.log("Verify organization ID:", id); 
-    const org = await Organization.findOne({
-      where : {organizationId : id}
-    });
+  async moderateOpportunity(req, res) {
+    try {
+      const opportunityId = Number(req.params.opportunityId);
+      const { decision } = req.body;
 
-    if (!org) 
-        return res.status(404).json({ message: "Organization not found" });
-    
-    await Organization.update(
-      { isVerified: true },
-      { where: { organizationId: id } }
-    );
+      if (!opportunityId || !decision) {
+        return res.status(400).json({ message: "Missing required fields." });
+      }
 
-    res.status(200).json({
-      message: "Organization verified successfully",
-      updated: { organizationId: id, isVerified: true }
-    });
-  } catch (err) {
-    console.error("Error verifying organization:", err);
-    res.status(500).json({ message: err.message });
-  }
+      if (decision === "keep") {
+        const result = await AdminService.keepOpportunity(opportunityId);
+        if (result?.error) return res.status(404).json({ message: result.error });
+        return res.status(200).json({ message: "Opportunity kept. Reports cleared." });
+      }
+
+      if (decision === "remove") {
+        const result = await AdminService.removeOpportunity(opportunityId);
+        if (result?.error) return res.status(404).json({ message: result.error });
+        return res.status(200).json({ message: "Opportunity removed." });
+      }
+
+      return res.status(400).json({ message: "Invalid decision. Use 'keep' or 'remove'." });
+    } catch (error) {
+      console.error("Admin moderateOpportunity error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async listPendingOrganizations(req, res) {
+    try {
+      const organizations = await AdminService.listPendingOrganizations();
+      res.status(200).json(organizations);
+    } catch (error) {
+      console.error("Admin listPendingOrganizations error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async reviewOrganization(req, res) {
+    try {
+      const organizationId = Number(req.params.organizationId);
+      const { decision } = req.body;
+
+      if (!organizationId || !decision) {
+        return res.status(400).json({ message: "Missing required fields." });
+      }
+
+      if (decision === "accept") {
+        const result = await AdminService.verifyOrganization(organizationId);
+        if (result?.error) return res.status(404).json({ message: result.error });
+        return res.status(200).json({ message: "Organization verified.", organization: result.organization });
+      }
+
+      if (decision === "reject") {
+        const result = await AdminService.rejectOrganization(organizationId);
+        if (result?.error) return res.status(404).json({ message: result.error });
+        return res.status(200).json({ message: "Organization rejected and removed." });
+      }
+
+      return res.status(400).json({ message: "Invalid decision. Use 'accept' or 'reject'." });
+    } catch (error) {
+      console.error("Admin reviewOrganization error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+>>>>>>> dev
 };

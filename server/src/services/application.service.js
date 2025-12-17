@@ -1,120 +1,161 @@
-import Application from "../models/application.model.js"
-import Opportunity from "../models/opportunity.model.js"
-import Volunteer from "../models/volunteer.model.js"
-import Notification from "../models/notification.model.js"
+import Application from "../models/application.model.js";
+import Opportunity from "../models/opportunity.model.js";
+import Volunteer from "../models/volunteer.model.js";
 import Organization from "../models/organization.model.js";
+import User from "../models/user.model.js";
 
 export const ApplicationService = {
 
-    async apply(volunteerId, opportunityId) {
+  async listByOpportunity(opportunityId, userId) {
+    // Find organization for this user
+    const organization = await Organization.findOne({
+      where: { userId },
+    });
 
-        // First check if the volunteer exists 
-        const hasVolunteer = await Volunteer.findByPk(volunteerId);
-
-        if(!hasVolunteer) {
-            return {error: "Volunteer not found"};
-        }
-
-        // Check if opportunity in question exists
-        const hasOpportunity = await Opportunity.findByPk(opportunityId);
-
-        if(!hasOpportunity) {
-            return {error: "Opportunity not found."};
-        }
-
-        // Check for duplication application
-        const hasDoubleApplication = await Application.findOne({
-            where: {volunteerId, opportunityId},
-        });
-
-        if(hasDoubleApplication) {
-            return {error: "You have already applied to this opportunity."}
-        }
-
-        
-
-        // Create Application
-        const newApplication = await Application.create({
-            volunteerId, 
-            opportunityId,
-            status: "pending",
-        });
-
-        await Notification.create({
-            userId: organization.userId,
-            message: `New application for the opportunity "${Opportunity.title}".`
-        })
-
-        return newApplication;
-    },
-
-    async getMyApplications(volunteerId) {
-        return await Application.findAll({
-            where: {volunteerId},
-            include: [
-                {
-                    model: Opportunity,
-                    as: "opportunity",
-                    include: [{ model: Organization, as: "organization"}]
-                }
-            ],
-            order: [[ "createdAt", "DESC"]],
-        });
-    },
-
-    async getMyApplicationDetails(applicationId) {
-        return await Application.findOne({
-            where: { applicationId}, 
-            include: [
-                {
-                    model: Opportunity, 
-                    as: "opportunity",
-                    include: [{ model: Organization, as: "organization"}]
-                }
-            ]
-        });
-    },
-
-    async cancel(applicationId, reason) {
-        const application = await Application.findByPk(applicationId, {
-            include: [
-                {
-                    model: Opportunity,
-                    as: "opportunity",
-                    include: [{ model: Organization, as: "organization"}]
-                }
-            ]
-        });
-
-        if(!application) {
-            return { error: "Application not found."};
-        }
-
-        if(application.status = "cancelled") {
-            return { error: "Application is already cancelled."};
-        }
-
-        application.status = "cancelled";
-        await application.save();
-
-        await Notification.create({
-            userId: application.opportunity.organization.userId,
-            message: `A volunteer cancelled their application for "${app.opportunity.title}".`,
-        });
-
-        return application;
-    },
-
-    async update(applicationId, data) {
-        const application = await Application.findByPk(applicationId);
-
-        if(!application) {
-            return {error: "Application not found."};
-        }
-
-        Object.assign(application, data);
-        await application.save();
-
-        return application;
+    if (!organization) {
+      throw new Error("Organization not found");
     }
-}
+
+    // Verify ownership of opportunity
+    const opportunity = await Opportunity.findOne({
+      where: {
+        opportunityId,
+        organizationId: organization.organizationId,
+      },
+    });
+
+    if (!opportunity) {
+      // Not owner → see nothing
+      return [];
+    }
+
+    return Application.findAll({
+      where: { opportunityId },
+      include: [
+        {
+          model: Volunteer,
+          as: "volunteer",
+          include: [{ model: User, as: "user" }],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+  },
+
+ 
+  async reviewForOrganization(applicationId, decision, organizationUserId) {
+    if (!["accepted", "rejected"].includes(decision)) {
+      throw new Error("Invalid decision");
+    }
+
+    const application = await Application.findByPk(applicationId, {
+      include: [
+        {
+          model: Opportunity,
+          as: "opportunity",
+          include: {
+            model: Organization,
+            as: "organization",
+            where: { userId: organizationUserId },
+          },
+        },
+        {
+          model: Volunteer,
+          as: "volunteer",
+          include: [{ model: User, as: "user" }],
+        },
+      ],
+    });
+
+    if (!application) {
+      throw new Error("Unauthorized or application not found");
+    }
+
+    // 🔒 Final decision protection
+    if (application.status !== "pending") {
+      throw new Error(
+        `Application already ${application.status}. Review is final.`
+      );
+    }
+
+    application.status = decision;
+    await application.save();
+
+    // Optional notification to volunteer
+    // await Notification.create({
+    //   userId: application.volunteer.user.userId,
+    //   message: `Your application was ${decision}.`,
+    // });
+
+    return application;
+  },
+
+
+  async apply(userId, opportunityId) {
+    // Find volunteer via userId
+    const volunteer = await Volunteer.findOne({ where: { userId } });
+
+    if (!volunteer) {
+      return { error: "Volunteer not found" };
+    }
+
+    // Check opportunity
+    const opportunity = await Opportunity.findByPk(opportunityId);
+    if (!opportunity) {
+      return { error: "Opportunity not found." };
+    }
+
+    // Prevent duplicate applications
+    const existing = await Application.findOne({
+      where: { volunteerId: volunteer.volunteerId, opportunityId },
+    });
+
+    if (existing) {
+      return { error: "You have already applied to this opportunity." };
+    }
+
+    const application = await Application.create({
+      volunteerId: volunteer.volunteerId,
+      opportunityId,
+      status: "pending",
+    });
+
+    return application;
+  },
+
+
+  async getMyApplications(userId) {
+    const volunteer = await Volunteer.findOne({ where: { userId } });
+
+    if (!volunteer) {
+      return [];
+    }
+
+    return Application.findAll({
+      where: { volunteerId: volunteer.volunteerId },
+      include: [
+        {
+          model: Opportunity,
+          as: "opportunity",
+          include: [{ model: Organization, as: "organization" }],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+  },
+
+
+  async update(applicationId, data) {
+    const application = await Application.findByPk(applicationId);
+
+    if (!application) {
+      return { error: "Application not found." };
+    }
+
+    Object.assign(application, data);
+    await application.save();
+
+    return application;
+  },
+};
+

@@ -8,18 +8,21 @@ interface Props {
 }
 
 export default function ProtectedRoute({ children, role }: Props) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  // Not logged in → redirect to login
+  if (loading) {
+    return <div className="mt-20 text-center">Loading...</div>;
+  }
+
+  // Not logged in
   if (!user) {
     return <Navigate to="/authentication" replace />;
   }
 
-  // If route requires specific role, but user has different role → deny access
+  // Wrong role
   if (role && user.role !== role) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Access granted
   return children;
 }

@@ -4,6 +4,10 @@ import MyApplications from "./pages/MyApplications";
 import AuthenticationPage from "./pages/authenticationPage";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import AdminPanel from "./pages/adminPanel";
+import ManageOpportunities from "./pages/ManageOpportunities";
+import Unauthorized from "./pages/Unauthorized";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 
 
@@ -19,11 +23,30 @@ function App() {
         {/* Public pages */}
         <Route path="/" element={<Opportunities />} />
         <Route path="/opportunities" element={<Opportunities />} />
-        {/* Applications */}
-        <Route path="/my-applications" element={<MyApplications />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
-        <Route path="/admin" element={<AdminPanel />} />
+
+        {/* Organization Management */}
+        <Route path="/manage-opportunities" element={<ManageOpportunities />} />
+        {/* Error pages */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* Protected Routes */}
+        <Route path="/my-applications" element={
+          <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>
+        } />
+
+        <Route path="/admin" element={
+          <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
+        } />
+
+        {/*  Unauthorized  */}
+        <Route 
+          path="/unauthorized"
+          element={<Unauthorized />
+          }
+        />
+
       </Routes>
 
     </div>

@@ -1,15 +1,20 @@
 import express from "express";
-import {
-  getPendingOrganizations,
-  verifyOrganization
-} from "../controllers/admin.controller.js";
+import { authenticateUser } from "../middleware/authenticateUser.js";
+import { requireAdmin } from "../middleware/requireAdmin.js";
+import { AdminController } from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
-// get all non-verified organizations
-router.get("/organizations/pending", getPendingOrganizations);
+// All admin routes require a valid JWT token and admin role.
+router.use(authenticateUser, requireAdmin);
 
-// verify a specific organization
-router.patch("/organizations/verify/:id", verifyOrganization);
+// Reported opportunities (moderation)
+router.get("/reported-opportunities", AdminController.getReportedOpportunities);
+router.post("/opportunities/:opportunityId/moderate", AdminController.moderateOpportunity);
+
+// Organization verification
+router.get("/organizations/pending", AdminController.listPendingOrganizations);
+router.post("/organizations/:organizationId/review", AdminController.reviewOrganization);
 
 export default router;
+
