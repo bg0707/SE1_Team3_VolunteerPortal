@@ -1,7 +1,12 @@
 import express from "express"
 import { ApplicationController } from "../controllers/application.controller.js"
+import { authenticateUser } from "../middleware/authenticateUser.js";
 
 const router = express.Router();
+
+router.get("/opportunity/:opportunityId", authenticateUser, ApplicationController.listByOpportunity);
+
+router.patch("/:applicationId/status", authenticateUser, ApplicationController.review);
 
 // Create a new application
 router.post("/apply", ApplicationController.apply);

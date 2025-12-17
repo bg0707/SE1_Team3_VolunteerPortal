@@ -3,10 +3,14 @@ import Opportunities from "./pages/Opportunities";
 import MyApplications from "./pages/MyApplications";
 import AuthenticationPage from "./pages/authenticationPage";
 import OpportunityDetails from "./pages/OpportunityDetails";
-import ProtectedRoute from "./components/ProtectedRoute";
+import AdminPanel from "./pages/adminPanel";
+import ManageOpportunities from "./pages/ManageOpportunities";
 import Unauthorized from "./pages/Unauthorized";
 import AdminPanel from "./pages/AdminPanel";
 import UserDashboard from "./pages/UserDashboard";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 import NavBar from "./components/NavBar";
 
@@ -24,6 +28,11 @@ function App() {
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
         <Route path="/dashboard" element={<UserDashboard />} />
 
+        {/* Organization Management */}
+        <Route path="/manage-opportunities" element={<ManageOpportunities />} />
+        {/* Error pages */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
         {/* Protected Routes */}
         <Route path="/my-applications" element={
           <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>
@@ -39,6 +48,7 @@ function App() {
           element={<Unauthorized />
           }
         />
+
       </Routes>
 
     </div>

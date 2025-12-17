@@ -96,8 +96,8 @@ export default function NavBar() {
             {/* Organizations only */}
             {user?.role === "organization" && (
               <li>
-                <a href="#" className="block py-2 px-3 hover:text-fg-brand">
-                  Organization Dashboard
+                <a href="/manage-opportunities" className="block py-2 px-3 hover:text-fg-brand">
+                  Manage Opportunities
                 </a>
               </li>
             )}

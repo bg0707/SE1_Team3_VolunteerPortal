@@ -11,7 +11,18 @@ export interface Opportunity {
   category?: { name: string };
   organization?: { name: string, isVerified: boolean };
   createdAt: string;
+
+  category?: {
+    categoryId: number;
+    name: string;
+  };
+
+  organization?: {
+    name: string;
+    userId: number; 
+  };
 }
+
 
 interface OpportunityCardProps {
   opportunity: Opportunity;

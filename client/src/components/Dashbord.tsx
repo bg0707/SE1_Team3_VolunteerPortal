@@ -5,8 +5,11 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user, onLogout }: DashboardProps) {
+    console.log(user);
     const isVolunteer = !!user.fullName;
     const isOrganization = !!user.organizationName;
+
+   
 
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -20,10 +23,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                         : isOrganization
                             ? user.organizationName
                             : "User"}
-                    !
+                    
                 </h1>
 
-                {<p className="text-gray-600 mb-2"> 
+                {<p className="text-gray-600 mb-2">
                     <span className="font-bold">Email: </span>{user.email}
                 </p>}
 
@@ -41,7 +44,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
                 {isOrganization && (
                     <>
-                        
+
                         <p className="text-gray-600 mb-2">
                             <span className="font-bold">Description: </span> {user.description}
                         </p>
