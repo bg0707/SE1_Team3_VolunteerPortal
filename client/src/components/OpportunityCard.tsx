@@ -5,12 +5,21 @@ export interface Opportunity {
   opportunityId: number;
   title: string;
   description: string;
-  location: string;
-  date: string;
-  category?: { categoryId: number; name: string };
-  organization?: { name: string };
+  location: string | null;
+  date: string | null;
   createdAt: string;
+
+  category?: {
+    categoryId: number;
+    name: string;
+  };
+
+  organization?: {
+    name: string;
+    userId: number; 
+  };
 }
+
 
 interface OpportunityCardProps {
   opportunity: Opportunity;

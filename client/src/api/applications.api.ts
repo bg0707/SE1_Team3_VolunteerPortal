@@ -1,10 +1,11 @@
-
 const API_URL = "http://localhost:3001/applications";
 
-
 export interface Organization {
+  organizationId: number;
   name: string;
+  userId: number; 
 }
+
 
 export interface Opportunity {
   opportunityId: number;
@@ -30,54 +31,67 @@ export interface Application {
   applicationId: number;
   status: "pending" | "accepted" | "rejected" | "cancelled";
   createdAt: string;
-  opportunity: Opportunity;
+  opportunity?: Opportunity;
   volunteer?: Volunteer;
 }
 
-export async function fetchApplicationsByOpportunity(opportunityId: number) {
-  const res = await fetch(`${API_URL}/opportunity/${opportunityId}`);
+
+export async function fetchApplicationsByOpportunity(
+  opportunityId: number,
+  token: string
+): Promise<Application[]> {
+  const res = await fetch(`${API_URL}/opportunity/${opportunityId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to fetch applications");
+  }
+
   return res.json();
 }
 
-export async function reviewApplication(applicationId: number, decision: "accepted" | "rejected") {
+
+export async function reviewApplication(
+  applicationId: number,
+  decision: "accepted" | "rejected",
+  token: string
+) {
   const res = await fetch(`${API_URL}/${applicationId}/status`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify({ decision }),
   });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to review application");
+  }
+
   return res.json();
 }
 
-// Fetch all applications for a volunteer 
-export async function fetchApplicationsByVolunteer(volunteerId: number): Promise<Application[]> {
-  const response = await fetch(`${API_URL}/volunteer/${volunteerId}`);
-  return response.json();
+
+export async function fetchApplicationsByVolunteer(
+  volunteerId: number,
+  token: string
+): Promise<Application[]> {
+  const res = await fetch(`${API_URL}/volunteer/${volunteerId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to fetch applications");
+  }
+
+  return res.json();
 }
-
-// Fetch details of a single application
-export async function fetchApplicationById(applicationId: number): Promise<Application> {
-  const response = await fetch(`${API_URL}/${applicationId}`);
-  return response.json();
-}
-
-// // Cancel application
-// export async function cancelApplication(applicationId: number, reason?: string): Promise<Application> {
-//   const response = await fetch(`${API_URL}/${applicationId}`, {
-//     method: "DELETE",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ reason }),
-//   });
-
-//   return response.json();
-// }
-
-// // Update application data
-// export async function updateApplication(applicationId: number, data: Record<string, any>): Promise<Application> {
-//   const response = await fetch(`${API_URL}/${applicationId}`, {
-//     method: "PUT",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(data),
-//   });
-
-//   return response.json();
-// }
