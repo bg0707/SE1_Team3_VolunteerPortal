@@ -12,8 +12,8 @@
 - At least one listing has been reported, or detected as expired or suspicious.
 
 **Main Succes Scenario**
-1. The administrator navigates into the “Moderation” module.
-2. The system displays a list of reported/detected listings, including organization name, report reason, date, and current status.
+1. The administrator navigates into the "Moderation" module.
+2. The system displays a list of reported/detected listings, including organization name, report reason, date, current status, count of reports.
 3. The administrator selects a listing to view its details, including description, attachments, and report history.
 4. The administrator chooses an appropriate action:
    - Keep: Mark listing as compliant and close report.
@@ -25,7 +25,7 @@
 8. The system automatically notifies the related organization and/or the reporter about the decision.
 
 **Postconditions**
-- The listing status is updated to “Active,” “Suspended,” or “Removed.”
+- The listing status is updated to "Active," "Suspended," or "Removed."
 - The system records the moderation action in an audit log.
 - Relevant parties (organization owner and/or reporter) are notified of the moderation outcome.
 
@@ -72,8 +72,8 @@
 
 **Main Success Scenario**
 
- 1. Volunteer opens the Opportunities page. 
- 2. System displays all available opportunities. 
+ 1. Volunteer opens the Opportunities page.
+ 2. System displays all available opportunities and key information of opportunities (title, organization, category, location, date) for quick browsing.
  3. Volunteer enters keywords or selects filters (e.g. location, data, category, etc.)
  4. System applies the filters to the search query and fitlers the opportunities. 
  5. System displays the filtered list of opportunities matching the criteria. 
@@ -87,7 +87,7 @@
 
 **Postconditions**
 - A filtered list of opportunities is displayed. 
-- Volunteer is now able to go into the different displayed opportunities. 
+- Volunteer is now able to go into the different displayed opportunities.
 
 ## UC-04 — Manage Opportunities
 
@@ -99,14 +99,19 @@
 
 **Main Success Scenario**
 
-1. Organization accesses the Manage Opportunities dashboard. 
-2. System displays all the opprtunities created by the Organization if any. 
-3. Organization selects Create New Opportunity. 
-4. System presents a form for required details. 
-5. Organization submits the form filled. 
-6. System checks and validates the inputs and saves the new opportunity. 
-7. Organization can also edit or delete existing opportunities from the same dashboard. 
-8. System confirms any changes with a success message. 
+1. Organization accesses the Manage Opportunities dashboard.
+2. System displays all the opprtunities created by the Organization if any.
+3. Organization can create a new opportunity or edit a existing one.
+4. System presents a form for required details including:
+  - Title
+  - Description
+  - Location
+  - Date
+  - Category
+5. Organization submits the form filled.
+6. System checks and validates the inputs and saves the new opportunity.
+7. Organization can also delete existing opportunities from the same dashboard.
+8. System confirms any changes with a success message.
 
 
 **Extensions (Alternate Flows)**
@@ -115,7 +120,7 @@
 
 **Postconditions**
 - New, edited or deleted opportunities are updated in the database. 
-- Changes are made in the volunteer-facing opportunity listings. 
+- Changes are made in the volunteer-facing opportunity listings.
 
 
 
@@ -129,10 +134,10 @@
 - Volunteers have an account on our Website.
 
 **Main Success Scenario:** Volunteer wants to see opportunity details
-1. Volunteer selects the Opportunity Tab
+1. User selects the Opportunity Tab
 2. System shows the list of available Opportunities
-3. Volunteer choses an Opportunity
-4. System shows the details to said Opportunity
+3. User choses an Opportunity
+4. System shows the details of Opportunity and the list of applicants. Additionally, volunteer can find the action buttons like "Apply" and "Report" on the details page, "Accept applicant" and "Reject applicant" for organization owner.
 
 
 **Postconditions:** Volunteer is allowed to view the details about an Opportunity
@@ -217,10 +222,10 @@ Admin override:
   1. System displays "No opportunities found
   2. System suggest signing up for notification
 - **Search returns no results:**
-  1. Systems displays “No matches found” message
+  1. Systems displays "No matches found" message
   2. System suggests alternative search terms
 - **Opportunity is full:**
-  1. System displays “Fully booked” status
+  1. System displays "Fully booked" status
   2. System offers waitlist option if available
 
 **Postconditions**
@@ -372,7 +377,7 @@ Deactivate accounts, assign/revoke roles and permissions to ensure platform secu
 1. No changes, provide the administrator with understandable error messages.
 
 ## Workflow
-1. Administrators navigate to the “User Access” module.
+1. Administrators navigate to the "User Access" module.
 2. Administrators select the target user.
 3. The system displays the user's basic information (email, name, etc.), current status (Active / Deactivated), and role list (Volunteer, Org Admin, Admin, etc.).
 4. Administrators perform required actions:
@@ -381,7 +386,7 @@ Deactivate accounts, assign/revoke roles and permissions to ensure platform secu
 5. The system performs permission and constraint checks (e.g., cannot delete the last remaining platform administrator).
 6. The system persists changes and writes audit logs (who did what to whom, when, and the resulting differences).
 7. The system sends notifications to affected users and enforces reauthentication upon next login if necessary.
-8. The system displays a “Success” confirmation and updated information to the administrator.
+8. The system displays a "Success" confirmation and updated information to the administrator.
 
 ## Exception Flows
 1. Permission and constraint check failed.
@@ -404,16 +409,23 @@ View, review, and decide whether to accept volunteer applications to ensure appr
 2. Applications have already been submitted by volunteers under this organization.
 
 ## Postconditions
-1. Volunteer application status updated to “Approved” or “Rejected”.
+1. Volunteer application status updated to "Approved" or "Rejected".
 2. The system notifies volunteers of the review results.
 
 ## Workflow
-1. The administrator navigates to the “Manage Opportunities” module and selects an event.
+1. The administrator navigates to the "Manage Opportunities" module and selects an event.
 2. The system displays the volunteer application list for that event (including names, contact information, application time, etc.).
 3. The administrator clicks on an application to view details.
-4. The administrator selects **Approve** or **Reject**.
+4. The administrator can **Approve** or **Reject** for one application with "pending" status.
 5. The system saves the review result and updates the application status.
 6. The system automatically sends a notification email or internal message to the volunteer, informing them of the review outcome.
+
+**Additional Implemented Features:**
+- Approve/Reject buttons are only shown for applications with "pending" status (final decision protection)
+- Application status updates in real-time after review action
+- Applications are displayed in card format with clear visual separation
+- Error handling with user-friendly messages
+- Applications section is integrated directly into the opportunity details page (for opportunity owners)
 
 
 ## UC-14 - Manage Applications
@@ -426,7 +438,7 @@ View, review, and decide whether to accept volunteer applications to ensure appr
 - The volunteer has submitted at least one application.
 
 **Main Succes Scenario**
-1. Volunteers open the “My Applications” module.
+1. Volunteers open the "My Applications" module.
 2. The system displays the application list by time/status (event name, organization, date, location, current status: Pending/Approved/Rejected, etc.).
 3. Volunteers click any application to view details (event time, meeting point, contact person, application fields/preferences).
 4. Volunteers can perform one of the following actions:
