@@ -1,6 +1,7 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
+import defaultAvatar from "../assets/avatar.avif";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -124,6 +125,20 @@ export default function NavBar() {
                 </a>
               </li>
             )}
+
+            {/* Logout — only show if logged in */}
+            {user && (
+              <li>
+                <a href="/dashboard" title="User Dashbord">
+                  <img
+                  src={defaultAvatar}
+                  alt="User Avatar"
+                  className="w-9 h-9 rounded-full border border-gray-300"
+                  />
+                </a>  
+              </li>
+            )}
+            
 
             {/* Logout — only show if logged in */}
             {user && (

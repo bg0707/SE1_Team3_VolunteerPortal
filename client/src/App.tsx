@@ -6,9 +6,10 @@ import OpportunityDetails from "./pages/OpportunityDetails";
 import AdminPanel from "./pages/adminPanel";
 import ManageOpportunities from "./pages/ManageOpportunities";
 import Unauthorized from "./pages/Unauthorized";
+import AdminPanel from "./pages/AdminPanel";
+import UserDashboard from "./pages/UserDashboard";
+
 import ProtectedRoute from "./components/ProtectedRoute";
-
-
 
 
 import NavBar from "./components/NavBar";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/opportunities" element={<Opportunities />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
 
         {/* Organization Management */}
         <Route path="/manage-opportunities" element={<ManageOpportunities />} />
