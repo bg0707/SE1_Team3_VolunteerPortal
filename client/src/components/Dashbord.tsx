@@ -7,7 +7,7 @@ interface DashboardProps {
 export default function Dashboard({ user, onLogout }: DashboardProps) {
     const isVolunteer = !!user.fullName;
     const isOrganization = !!user.organizationName;
-
+    console.log("Dashboard user:", user);
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">
             <div className="w-[360px] p-8 rounded-xl bg-white shadow-lg text-center">

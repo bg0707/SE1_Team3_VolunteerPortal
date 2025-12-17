@@ -7,7 +7,7 @@ import ManageOpportunities from "./pages/ManageOpportunities";
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminPanel from "./pages/AdminPanel";
-
+import UserDashboard from "./pages/UserDashbord";
 
 
 import NavBar from "./components/NavBar";
@@ -28,7 +28,7 @@ function App() {
         <Route path="/manage-opportunities" element={<ManageOpportunities />} />
         {/* Error pages */}
         <Route path="/unauthorized" element={<Unauthorized />} />
-
+        <Route path="/dashboard" element={<UserDashboard />} />
         {/* Protected Routes */}
         <Route path="/my-applications" element={
           <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>

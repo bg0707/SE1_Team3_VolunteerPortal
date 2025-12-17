@@ -1,6 +1,7 @@
 import { useState } from "react";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
+import defaultAvatar from "../assets/avatar.avif";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
@@ -121,6 +122,19 @@ export default function NavBar() {
                   className="block py-2 px-3 hover:text-fg-brand"
                 >
                   Login/Register
+                </a>
+              </li>
+            )}
+
+            {/* Dashbord only show if logged in */}
+            {user && (
+              <li>
+                <a href="/dashboard" title="User Dashboard">
+                  <img
+                    src={defaultAvatar}
+                    alt="User Avatar"
+                    className="w-9 h-9 rounded-full border border-gray-300 hover:ring-2 hover:ring-fg-brand transition cursor-pointer"
+                  />
                 </a>
               </li>
             )}
