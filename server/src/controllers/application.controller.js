@@ -1,8 +1,7 @@
 import { ApplicationService } from "../services/application.service.js";
 
 export class ApplicationController {
-  
-    static async listByOpportunity(req, res) {
+  static async listByOpportunity(req, res) {
     try {
       const { opportunityId } = req.params;
       const userId = req.user.userId;
@@ -29,19 +28,36 @@ export class ApplicationController {
       const { decision } = req.body;
       const organizationUserId = req.user.userId;
 
-      const result = await ApplicationService.reviewForOrganization(
+      const application = await ApplicationService.reviewForOrganization(
         applicationId,
         decision,
         organizationUserId
       );
 
-      return res.json({
+      return res.status(200).json({
         message: "Application reviewed.",
-        application: result,
+        application,
       });
     } catch (err) {
-      console.error(err);
-      res.status(403).json({ message: err.message });
+      console.error("Review application error:", err);
+
+      if (err.message.includes("already")) {
+        return res.status(409).json({ message: err.message });
+      }
+
+      if (err.message.includes("Invalid decision")) {
+        return res.status(400).json({ message: err.message });
+      }
+
+      if (err.message.includes("Unauthorized")) {
+        return res.status(403).json({ message: err.message });
+      }
+
+      if (err.message.includes("not found")) {
+        return res.status(404).json({ message: err.message });
+      }
+
+      return res.status(500).json({ message: "Server error" });
     }
   }
 
@@ -81,7 +97,6 @@ export class ApplicationController {
       res.status(500).json({ message: "Server error", error: err.message });
     }
   }
-
 
   static async update(req, res) {
     try {

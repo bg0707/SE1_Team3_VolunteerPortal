@@ -6,7 +6,6 @@ import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
 
 export const ApplicationService = {
-
   async listByOpportunity(opportunityId, userId) {
     // 1. Find organization linked to this user
     const organization = await Organization.findOne({
@@ -71,6 +70,12 @@ export const ApplicationService = {
       throw new Error("Unauthorized or application not found");
     }
 
+    if (application.status !== "pending") {
+      throw new Error(
+        `Application already ${application.status}. Review is final.`
+      );
+    }
+
     application.status = decision;
     await application.save();
 
@@ -129,7 +134,6 @@ export const ApplicationService = {
       order: [["createdAt", "DESC"]],
     });
   },
-
 
   async update(applicationId, data) {
     const application = await Application.findByPk(applicationId);

@@ -17,7 +17,7 @@ export default function OpportunityApplicants({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
+  /* ---------- LOAD APPLICATIONS ---------- */
   useEffect(() => {
     if (!token) return;
 
@@ -40,7 +40,7 @@ export default function OpportunityApplicants({
     load();
   }, [opportunityId, token]);
 
-
+  /* ---------- REVIEW ---------- */
   const handleReview = async (
     applicationId: number,
     decision: "accepted" | "rejected"
@@ -66,7 +66,7 @@ export default function OpportunityApplicants({
     }
   };
 
-
+  /* ---------- STATES ---------- */
   if (loading) {
     return <p className="mt-6 text-gray-500">Loading applications...</p>;
   }
@@ -87,7 +87,7 @@ export default function OpportunityApplicants({
     );
   }
 
-
+  /* ---------- RENDER ---------- */
   return (
     <div className="space-y-3">
       {apps.map((app) => (
@@ -110,27 +110,28 @@ export default function OpportunityApplicants({
             </div>
           </div>
 
-          <div className="space-x-2">
-            <button
-              disabled={app.status !== "pending"}
-              className="px-3 py-1 bg-green-600 text-white rounded disabled:opacity-50"
-              onClick={() =>
-                handleReview(app.applicationId, "accepted")
-              }
-            >
-              Approve
-            </button>
+          {/* ACTIONS */}
+          {app.status === "pending" && (
+            <div className="space-x-2">
+              <button
+                className="px-3 py-1 bg-green-600 text-white rounded"
+                onClick={() =>
+                  handleReview(app.applicationId, "accepted")
+                }
+              >
+                Approve
+              </button>
 
-            <button
-              disabled={app.status !== "pending"}
-              className="px-3 py-1 bg-red-500 text-white rounded disabled:opacity-50"
-              onClick={() =>
-                handleReview(app.applicationId, "rejected")
-              }
-            >
-              Reject
-            </button>
-          </div>
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded"
+                onClick={() =>
+                  handleReview(app.applicationId, "rejected")
+                }
+              >
+                Reject
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>
