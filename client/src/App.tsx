@@ -6,7 +6,7 @@ import OpportunityDetails from "./pages/OpportunityDetails";
 import AdminPanel from "./pages/adminPanel";
 import ManageOpportunities from "./pages/ManageOpportunities";
 import Unauthorized from "./pages/Unauthorized";
-import AdminPanel from "./pages/AdminPanel";
+
 import UserDashboard from "./pages/UserDashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
