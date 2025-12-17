@@ -12,6 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  loading: boolean; 
   login: (token: string, user: User) => void;
   logout: () => void;
 }
@@ -21,8 +22,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); 
 
-  // Load authentication from localStorage on refresh
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
@@ -31,35 +32,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
     }
+
+    setLoading(false); 
   }, []);
 
-  // Save to localStorage on login
   const login = (jwt: string, userData: User) => {
     setToken(jwt);
     setUser(userData);
-
     localStorage.setItem("token", jwt);
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
-  // Logout function
   const logout = () => {
     setToken(null);
     setUser(null);
-
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
-    // optional: redirect
     window.location.href = "/";
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
 
 // Hook to use the context easily:
 export const useAuth = () => {
