@@ -18,12 +18,17 @@ export async function getPendingOrganizations(token: string) {
 
 // VERIFY organization
 export async function verifyOrganization(id: number, token: string) {
-  const response = await fetch(`${API_URL}/organizations/verify/${id}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `http://localhost:3001/admin/organizations/${id}/review`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ decision: "accept" }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to verify organization");

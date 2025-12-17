@@ -3,7 +3,7 @@ import Opportunities from "./pages/Opportunities";
 import MyApplications from "./pages/MyApplications";
 import AuthenticationPage from "./pages/authenticationPage";
 import OpportunityDetails from "./pages/OpportunityDetails";
-import AdminPanel from "./pages/adminPanel";
+import AdminPanel from "./pages/AdminPanel";
 import ManageOpportunities from "./pages/ManageOpportunities";
 import Unauthorized from "./pages/Unauthorized";
 
