@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import opportunityRoutes from "./src/routes/opportunity.routes.js";
 import authenticationRoutes from "./src/routes/authentication.routes.js";
+import categoryRoutes from "./src/routes/categories.routes.js";
 import testConnection from "./tests/test-db.js";
 import applicationRoutes from "./src/routes/application.routes.js"
 import adminRoutes from "./src/routes/admin.routes.js";
@@ -20,8 +21,10 @@ app.use(cors());
 app.use("/opportunities", opportunityRoutes);
 app.use("/authentication", authenticationRoutes);
 app.use("/applications", applicationRoutes);
+app.use("/categories", categoryRoutes);
 app.use("/admin", adminRoutes);
 app.use("/reports", reportRoutes);
+
 
 // server listen 
 app.listen(3001, () => {
