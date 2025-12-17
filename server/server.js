@@ -12,6 +12,7 @@ import adminRoutes from "./src/routes/admin.routes.js";
 import reportRoutes from "./src/routes/report.routes.js";
 
 
+
 const app = express();
 
 app.use(express.json());

@@ -35,7 +35,7 @@ const registerVolunteer = async (req, res) => {
       age: age ?? null,
     });
 
-    // Optional: Auto-login
+    // Auto-login
     const token = jwt.sign(
       {
         userId: newUser.userId,

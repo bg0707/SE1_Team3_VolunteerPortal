@@ -1,3 +1,4 @@
+
 import { AdminService } from "../services/admin.service.js";
 
 export const AdminController = {
@@ -76,4 +77,5 @@ export const AdminController = {
       res.status(500).json({ message: "Server error", error: error.message });
     }
   },
+>>>>>>> dev
 };
