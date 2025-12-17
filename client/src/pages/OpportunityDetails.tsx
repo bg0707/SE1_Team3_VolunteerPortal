@@ -6,15 +6,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import { applyToOpportunity } from "../api/applications.api";
 import { useAuth } from "../context/AuthContext";
 import { fetchApplicationsByVolunteer } from "../api/applications.api";
+import { submitReport } from "../api/reports.api";
 
 export default function OpportunityDetails() {
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { user } = useAuth(); // Logged-in user
+  const { user, token } = useAuth(); // Logged-in user
   const [hasApplied, setHasApplied] = useState(false);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
+
+  const [showReport, setShowReport] = useState(false);
+  const [reportText, setReportText] = useState("");
+  const [reportSending, setReportSending] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,7 +47,7 @@ export default function OpportunityDetails() {
   const handleApply = async () => {
     if (!user) {
       alert("You must be logged in to apply.");
-      return navigate("/login");
+      return navigate("/authentication");
     }
 
     if (user.role !== "volunteer") {
@@ -65,6 +70,37 @@ export default function OpportunityDetails() {
     } catch (err) {
       console.error("Error applying:", err);
       alert("Failed to apply. Please try again.");
+    }
+  };
+
+  const handleSubmitReport = async () => {
+    if (!user) {
+      alert("You must be logged in to submit a report.");
+      return navigate("/authentication");
+    }
+
+    if (user.role !== "volunteer") {
+      return alert("Only volunteers can report a listing.");
+    }
+
+    if (!token) {
+      return alert("Your session expired. Please log in again.");
+    }
+
+    if (!reportText.trim()) {
+      return alert("Please enter a short description of the issue.");
+    }
+
+    try {
+      setReportSending(true);
+      await submitReport(token, opportunity.opportunityId, reportText.trim());
+      alert("Report submitted. Thank you.");
+      setReportText("");
+      setShowReport(false);
+    } catch (e: any) {
+      alert(e?.message ?? "Failed to submit report");
+    } finally {
+      setReportSending(false);
     }
   };
 
@@ -164,6 +200,42 @@ export default function OpportunityDetails() {
               {alreadyApplied ? "Already Applied" : "Apply / Join Opportunity"}
             </button>
           </div>
+
+          {/* report listing */}
+          {user?.role === "volunteer" && (
+            <div className="mt-4">
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setShowReport((s) => !s)}
+                  className="px-4 py-2 rounded border bg-white hover:bg-gray-50"
+                >
+                  {showReport ? "Cancel Report" : "Report this listing"}
+                </button>
+              </div>
+
+              {showReport && (
+                <div className="mt-4 border rounded p-4 bg-white">
+                  <label className="block text-sm font-medium text-gray-700">Why is this listing suspicious?</label>
+                  <textarea
+                    value={reportText}
+                    onChange={(e) => setReportText(e.target.value)}
+                    className="mt-2 w-full border rounded p-2"
+                    rows={4}
+                    placeholder="Describe the issue (e.g., misleading info, spam, safety concerns)..."
+                  />
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      onClick={handleSubmitReport}
+                      disabled={reportSending}
+                      className={`px-4 py-2 rounded text-white ${reportSending ? "bg-gray-400" : "bg-red-600 hover:bg-red-700"}`}
+                    >
+                      {reportSending ? "Submitting..." : "Submit Report"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

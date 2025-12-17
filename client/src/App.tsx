@@ -5,6 +5,7 @@ import AuthenticationPage from "./pages/authenticationPage";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
+import AdminPanel from "./pages/AdminPanel";
 
 
 import NavBar from "./components/NavBar";
@@ -25,6 +26,10 @@ function App() {
         {/* Protected Routes */}
         <Route path="/my-applications" element={
           <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>
+        } />
+
+        <Route path="/admin" element={
+          <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
         } />
 
         {/*  Unauthorized  */}
