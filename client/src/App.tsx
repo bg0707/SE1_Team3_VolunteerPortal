@@ -26,13 +26,9 @@ function App() {
         <Route path="/opportunities" element={<Opportunities />} />
         <Route path="/authentication" element={<AuthenticationPage />} />
         <Route path="/opportunities/:id" element={<OpportunityDetails />} />
-        <Route path="/dashboard" element={<UserDashboard />} />
 
-        {/* Organization Management */}
-        <Route path="/manage-opportunities" element={<ManageOpportunities />} />
-        {/* Error pages */}
-        <Route path="/unauthorized" element={<Unauthorized />} />
-
+  
+ 
         {/* Protected Routes */}
         <Route path="/my-applications" element={
           <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>
@@ -41,6 +37,15 @@ function App() {
         <Route path="/admin" element={
           <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
         } />
+
+        <Route  path="/dashboard" element={
+          <ProtectedRoute>  <UserDashboard /> </ProtectedRoute>
+        }/>
+
+        <Route path="/manage-opportunities" element={
+          <ProtectedRoute role="organization"> <ManageOpportunities /> </ProtectedRoute>
+        } />
+
 
         {/*  Unauthorized  */}
         <Route 
