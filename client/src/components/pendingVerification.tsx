@@ -8,10 +8,11 @@ interface Organization {
 interface Props {
   org: Organization;
   onVerify: (id: number) => void;
+  onReject: (id: number) => void;
 }
 
 // display the pending Organizations as a component 
-export default function PendingOrganization({ org, onVerify }: Props) {
+export default function PendingOrganization({ org, onVerify, onReject }: Props) {
   return (
     <div className="p-4 border rounded-lg shadow-sm bg-white flex justify-between items-center mb-3">
 
@@ -21,12 +22,20 @@ export default function PendingOrganization({ org, onVerify }: Props) {
         <p className="text-gray-800 mt-1">{org.description}</p>
       </div>
 
-      <button
-        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-        onClick={() => onVerify(org.organizationId)}
-      >
-        Verify
-      </button>
+      <div className="flex gap-2">
+        <button
+          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+          onClick={() => onVerify(org.organizationId)}
+        >
+          Verify
+        </button>
+        <button
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          onClick={() => onReject(org.organizationId)}
+        >
+          Reject
+        </button>
+      </div>
 
     </div>
   );

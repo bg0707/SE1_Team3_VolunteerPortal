@@ -51,6 +51,12 @@ Opportunity.init(
       allowNull: true,
     },
 
+    status: {
+      type: DataTypes.ENUM("active", "suspended"),
+      allowNull: false,
+      defaultValue: "active",
+    },
+
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

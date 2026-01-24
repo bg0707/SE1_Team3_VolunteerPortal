@@ -218,7 +218,15 @@ export default function ManageOpportunities() {
             <OpportunityCardItem
               key={opp.opportunityId}
               opportunity={opp}
-              onView={() => navigate(`/opportunities/${opp.opportunityId}`)}
+              onView={() => {
+                if (opp.status === "suspended") {
+                  alert(
+                    "This opportunity is suspended and cannot be viewed. If you believe this is a mistake, contact support@yoursite.com."
+                  );
+                  return;
+                }
+                navigate(`/opportunities/${opp.opportunityId}`);
+              }}
               onEdit={() => handleEdit(opp)}
               onDelete={() => handleDelete(opp.opportunityId)}
             />

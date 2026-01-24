@@ -10,6 +10,7 @@ import testConnection from "./tests/test-db.js";
 import applicationRoutes from "./src/routes/application.routes.js"
 import adminRoutes from "./src/routes/admin.routes.js";
 import reportRoutes from "./src/routes/report.routes.js";
+import notificationRoutes from "./src/routes/notification.routes.js";
 
 
 
@@ -25,6 +26,7 @@ app.use("/applications", applicationRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/admin", adminRoutes);
 app.use("/reports", reportRoutes);
+app.use("/notifications", notificationRoutes);
 
 
 // server listen 

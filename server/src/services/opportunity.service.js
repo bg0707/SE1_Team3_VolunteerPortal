@@ -9,6 +9,8 @@ export const OpportunityService = {
 
     // Apply filters
 
+    where.status = "active";
+
     if (filters.categoryId) {
       where.categoryId = filters.categoryId;
     }
@@ -34,7 +36,8 @@ export const OpportunityService = {
   },
 
   getOpportunityById(id) {
-    return Opportunity.findByPk(id, {
+    return Opportunity.findOne({
+      where: { opportunityId: id, status: "active" },
       include: [
         { model: Category, as: "category" },
         { model: Organization, as: "organization" },
@@ -111,6 +114,7 @@ export const OpportunityService = {
   },
 
   async updateOpportunity(opportunityId, opportunityData, userId) {
+    const { status: _status, ...safeData } = opportunityData ?? {};
     // Step 1: Get organizationId from userId
     const organizationId = await this.getOrganizationIdByUserId(userId);
 
@@ -126,7 +130,7 @@ export const OpportunityService = {
     }
 
     // Step 4: Update the opportunity
-    await opportunity.update(opportunityData);
+    await opportunity.update(safeData);
 
     // Step 5: Return updated opportunity with associations
     return Opportunity.findByPk(opportunityId, {

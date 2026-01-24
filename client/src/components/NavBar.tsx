@@ -1,12 +1,104 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 import defaultAvatar from "../assets/avatar.avif";
+import { Bell } from "lucide-react";
+import {
+  fetchNotifications,
+  markNotificationRead,
+  type Notification,
+} from "../api/notifications.api";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
 
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
+  const authToken = useMemo(() => token ?? "", [token]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifError, setNotifError] = useState<string | null>(null);
+  const [notifOffset, setNotifOffset] = useState(0);
+  const notifLimit = 2;
+  const [notifHasMore, setNotifHasMore] = useState(true);
+  const notifRef = useRef<HTMLLIElement | null>(null);
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  const loadNotifications = async (opts?: { reset?: boolean }) => {
+    if (!authToken) {
+      setNotifications([]);
+      setNotifOffset(0);
+      setNotifHasMore(false);
+      return [];
+    }
+
+    try {
+      const reset = opts?.reset ?? false;
+      const offset = reset ? 0 : notifOffset;
+      const data = await fetchNotifications(authToken, {
+        limit: notifLimit,
+        offset,
+      });
+      setNotifications((prev) => (reset ? data : [...prev, ...data]));
+      setNotifOffset(offset + data.length);
+      setNotifHasMore(data.length === notifLimit);
+      setNotifError(null);
+      return data;
+    } catch (error: any) {
+      setNotifError(error?.message ?? "Failed to load notifications");
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    loadNotifications({ reset: true });
+  }, [authToken]);
+
+  useEffect(() => {
+    if (!notifOpen) return;
+
+    const handleOutside = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (notifRef.current && target && !notifRef.current.contains(target)) {
+        setNotifOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+    };
+  }, [notifOpen]);
+
+  const toggleNotifications = async () => {
+    if (!authToken) return;
+    const willOpen = !notifOpen;
+    setNotifOpen(willOpen);
+
+    if (willOpen) {
+      try {
+        await loadNotifications({ reset: true });
+      } catch (error: any) {
+        setNotifError(error?.message ?? "Failed to load notifications");
+      }
+    }
+  };
+
+  const handleNotificationClick = async (notification: Notification) => {
+    if (!authToken || notification.isRead) return;
+    try {
+      await markNotificationRead(authToken, notification.notificationId);
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item.notificationId === notification.notificationId
+            ? { ...item, isRead: true }
+            : item
+        )
+      );
+    } catch (error: any) {
+      setNotifError(error?.message ?? "Failed to mark notification read");
+    }
+  };
 
   return (
     <nav className="bg-white fixed w-full z-20 top-0 start-0 border-default border-b">
@@ -123,6 +215,78 @@ export default function NavBar() {
                 >
                   Login/Register
                 </a>
+              </li>
+            )}
+
+            {/* Notifications — only show if logged in */}
+            {user && (
+              <li className="relative" ref={notifRef}>
+                <button
+                  onClick={toggleNotifications}
+                  className="relative block py-2 px-3 hover:text-fg-brand"
+                  aria-label="Notifications"
+                >
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 text-xs bg-red-500 text-white rounded-full px-1">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+                {notifOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white border border-default rounded-base shadow-lg z-30">
+                    <div className="px-4 py-2 text-sm font-semibold border-b border-default">
+                      Notifications
+                    </div>
+                    <ul className="max-h-80 overflow-auto">
+                      {notifError && (
+                        <li className="px-4 py-3 text-sm text-red-600">
+                          {notifError}
+                        </li>
+                      )}
+                      {!notifError && notifications.length === 0 && (
+                        <li className="px-4 py-3 text-sm text-gray-500">
+                          No notifications
+                        </li>
+                      )}
+                      {!notifError &&
+                        notifications.map((notification) => (
+                          <li
+                            key={notification.notificationId}
+                            className={`px-4 py-3 text-sm border-b border-default ${
+                              notification.isRead
+                                ? "text-gray-500"
+                                : "text-gray-900 font-medium"
+                            }`}
+                          >
+                            <button
+                              onClick={() =>
+                                handleNotificationClick(notification)
+                              }
+                              className="text-left w-full"
+                            >
+                              <div>{notification.message}</div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {new Date(
+                                  notification.createdAt
+                                ).toLocaleString()}
+                              </div>
+                            </button>
+                          </li>
+                        ))}
+                      {!notifError && notifHasMore && (
+                        <li className="px-4 py-3 text-sm">
+                          <button
+                            onClick={() => loadNotifications()}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            Load more
+                          </button>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                )}
               </li>
             )}
 

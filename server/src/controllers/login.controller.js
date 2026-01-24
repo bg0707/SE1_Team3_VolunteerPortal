@@ -37,6 +37,18 @@ const loginController = asyncHandler(async (req, res) => {
 
         const user = potentialUser;
 
+        if (user.status === 'suspended') {
+            return res.status(403).json({
+                message: 'Your account is temporarily suspended. Contact admin support.',
+            });
+        }
+
+        if (user.status === 'deactivated') {
+            return res.status(403).json({
+                message: 'Your account is deactivated. Contact support to reactivate.',
+            });
+        }
+
         let extraData = {};
 
         // Fetch extra info depending on role

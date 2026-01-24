@@ -8,6 +8,7 @@ export interface Opportunity {
   description: string;
   location: string;
   date: string;
+  status?: "active" | "suspended";
   category?: { name: string };
   organization?: { name: string, isVerified: boolean };
   createdAt: string;

@@ -3,6 +3,7 @@ import Opportunity from "../models/opportunity.model.js";
 import Volunteer from "../models/volunteer.model.js";
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
+import Notification from "../models/notification.model.js";
 
 export const ApplicationService = {
 
@@ -81,11 +82,10 @@ export const ApplicationService = {
     application.status = decision;
     await application.save();
 
-    // Optional notification to volunteer
-    // await Notification.create({
-    //   userId: application.volunteer.user.userId,
-    //   message: `Your application was ${decision}.`,
-    // });
+    await Notification.create({
+      userId: application.volunteer.user.userId,
+      message: `Your application for "${application.opportunity.title}" was ${decision}.`,
+    });
 
     return application;
   },
@@ -119,6 +119,15 @@ export const ApplicationService = {
       opportunityId,
       status: "pending",
     });
+
+    const organization = await Organization.findByPk(opportunity.organizationId);
+    if (organization) {
+      const volunteerName = volunteer.fullName ?? "A volunteer";
+      await Notification.create({
+        userId: organization.userId,
+        message: `${volunteerName} applied for "${opportunity.title}".`,
+      });
+    }
 
     return application;
   },
@@ -158,4 +167,3 @@ export const ApplicationService = {
     return application;
   },
 };
-

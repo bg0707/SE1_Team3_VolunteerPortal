@@ -30,6 +30,12 @@ User.init(
       allowNull: false,
     },
 
+    status: {
+      type: DataTypes.ENUM("active", "suspended", "deactivated"),
+      allowNull: false,
+      defaultValue: "active",
+    },
+
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

@@ -28,12 +28,34 @@ export const AdminController = {
       }
 
       if (decision === "remove") {
-        const result = await AdminService.removeOpportunity(opportunityId);
+        const { reason } = req.body;
+        if (!reason) {
+          return res.status(400).json({ message: "Removal reason is required." });
+        }
+        const result = await AdminService.removeOpportunity(opportunityId, reason);
         if (result?.error) return res.status(404).json({ message: result.error });
         return res.status(200).json({ message: "Opportunity removed." });
       }
 
-      return res.status(400).json({ message: "Invalid decision. Use 'keep' or 'remove'." });
+      if (decision === "suspend") {
+        const { reason } = req.body;
+        if (!reason) {
+          return res.status(400).json({ message: "Suspension reason is required." });
+        }
+        const result = await AdminService.suspendOpportunity(opportunityId, reason);
+        if (result?.error) return res.status(404).json({ message: result.error });
+        return res.status(200).json({ message: "Opportunity suspended." });
+      }
+
+      if (decision === "unsuspend") {
+        const result = await AdminService.unsuspendOpportunity(opportunityId);
+        if (result?.error) return res.status(404).json({ message: result.error });
+        return res.status(200).json({ message: "Opportunity reinstated." });
+      }
+
+      return res
+        .status(400)
+        .json({ message: "Invalid decision. Use 'keep', 'remove', 'suspend', or 'unsuspend'." });
     } catch (error) {
       console.error("Admin moderateOpportunity error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
@@ -74,6 +96,134 @@ export const AdminController = {
       return res.status(400).json({ message: "Invalid decision. Use 'accept' or 'reject'." });
     } catch (error) {
       console.error("Admin reviewOrganization error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async listUsers(req, res) {
+    try {
+      const { search, role, status, limit, offset } = req.query;
+      const parsedLimit = Number(limit ?? 10);
+      const parsedOffset = Number(offset ?? 0);
+      const safeLimit = Number.isFinite(parsedLimit)
+        ? Math.min(Math.max(parsedLimit, 1), 50)
+        : 10;
+      const safeOffset = Number.isFinite(parsedOffset) ? Math.max(parsedOffset, 0) : 0;
+
+      const data = await AdminService.listUsers({
+        search,
+        role,
+        status,
+        limit: safeLimit,
+        offset: safeOffset,
+      });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin listUsers error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async getUserDetails(req, res) {
+    try {
+      const userId = Number(req.params.userId);
+      if (!userId) {
+        return res.status(400).json({ message: "Invalid user id." });
+      }
+
+      const data = await AdminService.getUserDetails(userId);
+      if (!data) return res.status(404).json({ message: "User not found." });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin getUserDetails error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async updateUserStatus(req, res) {
+    try {
+      const userId = Number(req.params.userId);
+      const { status } = req.body;
+
+      if (!userId || !status) {
+        return res.status(400).json({ message: "Missing required fields." });
+      }
+
+      if (!["active", "suspended", "deactivated"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status." });
+      }
+
+      const user = await AdminService.updateUserStatus(userId, status);
+      if (!user) return res.status(404).json({ message: "User not found." });
+
+      res.status(200).json({ message: "User updated.", user });
+    } catch (error) {
+      console.error("Admin updateUserStatus error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async listOrganizations(req, res) {
+    try {
+      const { search, verificationStatus, limit, offset } = req.query;
+      const parsedLimit = Number(limit ?? 10);
+      const parsedOffset = Number(offset ?? 0);
+      const safeLimit = Number.isFinite(parsedLimit)
+        ? Math.min(Math.max(parsedLimit, 1), 50)
+        : 10;
+      const safeOffset = Number.isFinite(parsedOffset) ? Math.max(parsedOffset, 0) : 0;
+
+      const data = await AdminService.listOrganizations({
+        search,
+        verificationStatus,
+        limit: safeLimit,
+        offset: safeOffset,
+      });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin listOrganizations error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async getOrganizationDetails(req, res) {
+    try {
+      const organizationId = Number(req.params.organizationId);
+      if (!organizationId) {
+        return res.status(400).json({ message: "Invalid organization id." });
+      }
+
+      const data = await AdminService.getOrganizationDetails(organizationId);
+      if (!data) return res.status(404).json({ message: "Organization not found." });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin getOrganizationDetails error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async listAllOpportunities(req, res) {
+    try {
+      const { limit, offset } = req.query;
+      const parsedLimit = Number(limit ?? 10);
+      const parsedOffset = Number(offset ?? 0);
+      const safeLimit = Number.isFinite(parsedLimit)
+        ? Math.min(Math.max(parsedLimit, 1), 50)
+        : 10;
+      const safeOffset = Number.isFinite(parsedOffset) ? Math.max(parsedOffset, 0) : 0;
+
+      const data = await AdminService.listAllOpportunities({
+        limit: safeLimit,
+        offset: safeOffset,
+      });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin listAllOpportunities error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
     }
   },

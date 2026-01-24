@@ -6,6 +6,7 @@ import OpportunityDetails from "./pages/OpportunityDetails";
 import AdminPanel from "./pages/AdminPanel";
 import ManageOpportunities from "./pages/ManageOpportunities";
 import Unauthorized from "./pages/Unauthorized";
+import AdminUserManagement from "./pages/AdminUserManagement";
 
 import UserDashboard from "./pages/UserDashboard";
 
@@ -36,6 +37,10 @@ function App() {
 
         <Route path="/admin" element={
           <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
+        } />
+
+        <Route path="/admin/users" element={
+          <ProtectedRoute role="admin"><AdminUserManagement /></ProtectedRoute>
         } />
 
         <Route  path="/dashboard" element={

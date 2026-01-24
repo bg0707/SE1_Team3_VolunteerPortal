@@ -29,12 +29,19 @@ jest.unstable_mockModule('../../models/volunteer.model.js', () => ({
 jest.unstable_mockModule('../../models/organization.model.js', () => ({
   default: {
     findOne: jest.fn(),
+    findByPk: jest.fn(),
   },
 }));
 
 // Mocking Sequelize
 jest.unstable_mockModule('../../models/user.model.js', () => ({
   default: {},
+}));
+
+jest.unstable_mockModule('../../models/notification.model.js', () => ({
+  default: {
+    create: jest.fn(),
+  },
 }));
 
 
@@ -44,6 +51,7 @@ const { default: Application } = await import('../../models/application.model.js
 const { default: Opportunity } = await import('../../models/opportunity.model.js');
 const { default: Volunteer } = await import('../../models/volunteer.model.js');
 const { default: Organization } = await import('../../models/organization.model.js');
+const { default: Notification } = await import('../../models/notification.model.js');
 
 
 describe('ApplicationService', () => {
@@ -73,7 +81,11 @@ describe('ApplicationService', () => {
   // test for application already exists
   test('should return error if application already exists', async () => {
     Volunteer.findOne.mockResolvedValue({ volunteerId: 5 });
-    Opportunity.findByPk.mockResolvedValue({ id: 10 });
+    Opportunity.findByPk.mockResolvedValue({
+      id: 10,
+      organizationId: 7,
+      title: 'Food Distribution',
+    });
     Application.findOne.mockResolvedValue({ id: 99 });
 
     const result = await ApplicationService.apply(1, 10);
@@ -88,6 +100,7 @@ describe('ApplicationService', () => {
     Volunteer.findOne.mockResolvedValue({ volunteerId: 5 });
     Opportunity.findByPk.mockResolvedValue({ id: 10 });
     Application.findOne.mockResolvedValue(null);
+    Organization.findByPk.mockResolvedValue(null);
 
     const mockApplication = {
       id: 1,
@@ -106,6 +119,34 @@ describe('ApplicationService', () => {
       status: 'pending',
     });
     expect(result).toBe(mockApplication);
+    expect(Notification.create).not.toHaveBeenCalled();
+  });
+
+  test('should notify organization when application is created', async () => {
+    Volunteer.findOne.mockResolvedValue({ volunteerId: 5, fullName: 'Alex' });
+    Opportunity.findByPk.mockResolvedValue({
+      id: 10,
+      organizationId: 7,
+      title: 'Food Distribution',
+    });
+    Application.findOne.mockResolvedValue(null);
+    Organization.findByPk.mockResolvedValue({ userId: 77 });
+
+    Application.create.mockResolvedValue({
+      id: 1,
+      volunteerId: 5,
+      opportunityId: 10,
+      status: 'pending',
+    });
+
+    await ApplicationService.apply(1, 10);
+
+    expect(Notification.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 77,
+        message: expect.stringContaining('Alex'),
+      })
+    );
   });
 
 
@@ -200,9 +241,14 @@ describe('ApplicationService', () => {
     const mockApplication = {
       status: 'pending',
       save: jest.fn(),
+      volunteer: {
+        user: { userId: 22 },
+      },
+      opportunity: { title: 'Food Distribution' },
     };
 
     Application.findByPk.mockResolvedValue(mockApplication);
+    Notification.create.mockResolvedValue({});
 
     const result = await ApplicationService.reviewForOrganization(
       1,
@@ -212,6 +258,12 @@ describe('ApplicationService', () => {
 
     expect(mockApplication.status).toBe('accepted');
     expect(mockApplication.save).toHaveBeenCalled();
+    expect(Notification.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 22,
+        message: expect.stringContaining('accepted'),
+      })
+    );
     expect(result).toBe(mockApplication);
   });
 

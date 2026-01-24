@@ -15,7 +15,14 @@ export default function OpportunityCardItem({
 }: Props) {
   return (
     <div className="bg-white p-5 rounded-xl shadow border">
-      <h3 className="text-xl font-semibold mb-2">{opportunity.title}</h3>
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <h3 className="text-xl font-semibold">{opportunity.title}</h3>
+        {opportunity.status === "suspended" && (
+          <span className="text-xs font-semibold uppercase bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+            Suspended
+          </span>
+        )}
+      </div>
 
       <p className="text-gray-700 mb-4 line-clamp-3">
         {opportunity.description}
