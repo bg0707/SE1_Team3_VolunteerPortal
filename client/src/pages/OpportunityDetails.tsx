@@ -43,6 +43,12 @@ export default function OpportunityDetails() {
 
   if (!opportunity) return <div>Loading...</div>;
 
+  const baseUrl = "http://localhost:3001";
+  const imageSrc = opportunity.imageUrl
+    ? opportunity.imageUrl.startsWith("http")
+      ? opportunity.imageUrl
+      : `${baseUrl}${opportunity.imageUrl}`
+    : "";
 
   const isOwner =
     user?.role === "organization" &&
@@ -92,6 +98,17 @@ export default function OpportunityDetails() {
       {/* HEADER */}
       <h1 className="text-4xl font-bold mb-4">{opportunity.title}</h1>
 
+      {imageSrc && (
+        <div className="w-full max-h-96 rounded-xl overflow-hidden mb-6 border">
+          <img
+            src={imageSrc}
+            alt={opportunity.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-4 text-gray-600 mb-8">
         <span>📍 {opportunity.location ?? "No location"}</span>
         <span>📅 {new Date(opportunity.date).toLocaleDateString()}</span>
@@ -112,6 +129,11 @@ export default function OpportunityDetails() {
       <section className="bg-white p-5 rounded-xl shadow border mb-8">
         <h2 className="text-xl font-semibold mb-2">Organization</h2>
         <p className="font-medium">{opportunity.organization?.name}</p>
+        {opportunity.organization?.description && (
+          <p className="mt-2 text-gray-600">
+            {opportunity.organization.description}
+          </p>
+        )}
       </section>
 
       {/* APPLY */}
@@ -171,4 +193,3 @@ export default function OpportunityDetails() {
     </div>
   );
 }
-

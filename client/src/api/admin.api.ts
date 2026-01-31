@@ -85,6 +85,7 @@ export interface Opportunity {
   description: string;
   location?: string | null;
   date?: string | null;
+  imageUrl?: string | null;
   createdAt: string;
   organization?: Organization;
 }
@@ -96,6 +97,7 @@ export interface AdminOpportunity {
   status?: "active" | "suspended";
   location?: string | null;
   date?: string | null;
+  imageUrl?: string | null;
   createdAt: string;
   organization?: {
     organizationId: number;
@@ -115,6 +117,20 @@ export interface ReportedOpportunity {
   opportunity: Opportunity;
   reportCount: number;
   reports: Report[];
+}
+
+export interface ActivityLog {
+  activityLogId: number;
+  action: string;
+  entityType?: string | null;
+  entityId?: number | null;
+  metadata?: Record<string, any> | null;
+  createdAt: string;
+  actor?: {
+    userId: number;
+    email: string;
+    role: "volunteer" | "organization" | "admin";
+  } | null;
 }
 
 function authHeaders(token: string) {
@@ -296,6 +312,28 @@ export async function fetchAllOpportunities(
   if (!res.ok) {
     const err = await res.json().catch(() => null);
     throw new Error(err?.message || "Failed to fetch opportunities");
+  }
+
+  return res.json();
+}
+
+export async function fetchActivityLogs(
+  token: string,
+  options: { action?: string; actorUserId?: number; limit?: number; offset?: number } = {}
+): Promise<{ total: number; logs: ActivityLog[] }> {
+  const params = new URLSearchParams();
+  if (options.action) params.set("action", options.action);
+  if (options.actorUserId) params.set("actorUserId", String(options.actorUserId));
+  if (options.limit) params.set("limit", String(options.limit));
+  if (options.offset) params.set("offset", String(options.offset));
+
+  const res = await fetch(`${API_URL}/activity-logs?${params.toString()}`, {
+    headers: authHeaders(token),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => null);
+    throw new Error(err?.message || "Failed to fetch activity logs");
   }
 
   return res.json();

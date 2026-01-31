@@ -1,4 +1,5 @@
 import { OpportunityService } from '../services/opportunity.service.js';
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 export const OpportunityController = {
   // GET /opportunities
@@ -35,6 +36,7 @@ export const OpportunityController = {
     try {
       const userId = req.user.userId;
       const { title, description, location, date, categoryId } = req.body;
+      const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (!title?.trim()) {
         return res.status(400).json({ message: 'Title is required' });
@@ -44,10 +46,26 @@ export const OpportunityController = {
         return res.status(400).json({ message: 'Description is required' });
       }
 
-      const opportunity = await OpportunityService.createOpportunity(
-        { title, description, location, date, categoryId },
-        userId
-      );
+      const payload = {
+        title,
+        description,
+        location,
+        date,
+        categoryId,
+        ...(imageUrl ? { imageUrl } : {}),
+      };
+
+      const opportunity = await OpportunityService.createOpportunity(payload, userId);
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "opportunity.create",
+        entityType: "opportunity",
+        entityId: opportunity?.opportunityId,
+        metadata: {
+          title: opportunity?.title,
+        },
+      });
 
       res.status(201).json({
         message: 'Opportunity created successfully',
@@ -86,6 +104,7 @@ export const OpportunityController = {
       const opportunityId = req.params.id;
       const userId = req.user.userId;
       const { title, description, location, date, categoryId } = req.body;
+      const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (!title?.trim() || !description?.trim()) {
         return res.status(400).json({
@@ -93,11 +112,30 @@ export const OpportunityController = {
         });
       }
 
+      const payload = {
+        title,
+        description,
+        location,
+        date,
+        categoryId,
+        ...(imageUrl ? { imageUrl } : {}),
+      };
+
       const opportunity = await OpportunityService.updateOpportunity(
         opportunityId,
-        { title, description, location, date, categoryId },
+        payload,
         userId
       );
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "opportunity.update",
+        entityType: "opportunity",
+        entityId: opportunity?.opportunityId ?? Number(opportunityId),
+        metadata: {
+          title: opportunity?.title,
+        },
+      });
 
       res.status(200).json({
         message: 'Opportunity updated successfully',
@@ -132,6 +170,13 @@ export const OpportunityController = {
       const userId = req.user.userId;
 
       await OpportunityService.deleteOpportunity(opportunityId, userId);
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "opportunity.delete",
+        entityType: "opportunity",
+        entityId: Number(opportunityId),
+      });
 
       res.status(200).json({ message: 'Opportunity deleted successfully' });
     } catch (error) {

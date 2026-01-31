@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import ApplicationCard from "../components/ApplicationCard";
 
 import type { Application } from "../api/applications.api";
-import { fetchApplicationsByVolunteer } from "../api/applications.api";
+import { cancelApplication, fetchApplicationsByVolunteer } from "../api/applications.api";
 
 import { useAuth } from "../context/AuthContext";
 
 const MyApplications = () => {
-  const { user } = useAuth(); // ← Get logged-in user
+  const { user, token } = useAuth(); // ← Get logged-in user
 
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState<number | null>(null);
 
   useEffect(() => {
     const loadApps = async () => {
@@ -23,7 +24,7 @@ const MyApplications = () => {
 
         const volunteerId = user.userId;
 
-        const data = await fetchApplicationsByVolunteer(volunteerId);
+        const data = await fetchApplicationsByVolunteer(volunteerId, token ?? undefined);
         setApplications(data);
       } catch (err) {
         console.error("Failed to fetch applications:", err);
@@ -33,7 +34,36 @@ const MyApplications = () => {
     };
 
     loadApps();
-  }, [user]);
+  }, [user, token]);
+
+  const handleCancel = async (applicationId: number) => {
+    if (!token) {
+      alert("You must be logged in to cancel.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this application?"
+    );
+    if (!confirmed) return;
+
+    try {
+      setCancellingId(applicationId);
+      const result = await cancelApplication(applicationId, token);
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.applicationId === applicationId
+            ? { ...app, status: result.application.status }
+            : app
+        )
+      );
+    } catch (err) {
+      console.error("Failed to cancel application:", err);
+      alert("Failed to cancel application.");
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -62,7 +92,12 @@ const MyApplications = () => {
         </p>
       ) : (
         applications.map((app) => (
-          <ApplicationCard key={app.applicationId} application={app} />
+          <ApplicationCard
+            key={app.applicationId}
+            application={app}
+            onCancel={handleCancel}
+            cancelling={cancellingId === app.applicationId}
+          />
         ))
       )}
     </div>

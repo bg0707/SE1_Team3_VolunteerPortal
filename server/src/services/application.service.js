@@ -111,7 +111,25 @@ export const ApplicationService = {
     });
 
     if (existing) {
-      return { error: "You have already applied to this opportunity." };
+      if (existing.status !== "cancelled") {
+        return { error: "You have already applied to this opportunity." };
+      }
+
+      existing.status = "pending";
+      await existing.save();
+
+      const organization = await Organization.findByPk(
+        opportunity.organizationId
+      );
+      if (organization) {
+        const volunteerName = volunteer.fullName ?? "A volunteer";
+        await Notification.create({
+          userId: organization.userId,
+          message: `${volunteerName} applied for "${opportunity.title}".`,
+        });
+      }
+
+      return existing;
     }
 
     const application = await Application.create({
@@ -163,6 +181,54 @@ export const ApplicationService = {
 
     Object.assign(application, data);
     await application.save();
+
+    return application;
+  },
+
+  async cancel(applicationId, userId) {
+    const volunteer = await Volunteer.findOne({ where: { userId } });
+
+    if (!volunteer) {
+      throw new Error("Volunteer not found.");
+    }
+
+    const application = await Application.findByPk(applicationId, {
+      include: [
+        {
+          model: Opportunity,
+          as: "opportunity",
+          include: [{ model: Organization, as: "organization" }],
+        },
+      ],
+    });
+
+    if (!application) {
+      throw new Error("Application not found.");
+    }
+
+    if (application.volunteerId !== volunteer.volunteerId) {
+      throw new Error("Unauthorized to cancel this application.");
+    }
+
+    if (application.status === "cancelled") {
+      throw new Error("Application already cancelled.");
+    }
+
+    if (!["pending", "accepted"].includes(application.status)) {
+      throw new Error("Only pending or accepted applications can be cancelled.");
+    }
+
+    application.status = "cancelled";
+    await application.save();
+
+    const organization = application.opportunity?.organization;
+    if (organization) {
+      const volunteerName = volunteer.fullName ?? "A volunteer";
+      await Notification.create({
+        userId: organization.userId,
+        message: `${volunteerName} cancelled their application for "${application.opportunity.title}".`,
+      });
+    }
 
     return application;
   },

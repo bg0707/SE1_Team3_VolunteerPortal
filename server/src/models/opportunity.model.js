@@ -51,6 +51,11 @@ Opportunity.init(
       allowNull: true,
     },
 
+    imageUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+    },
+
     status: {
       type: DataTypes.ENUM("active", "suspended"),
       allowNull: false,

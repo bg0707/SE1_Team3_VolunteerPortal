@@ -1,4 +1,5 @@
 import { ApplicationService } from "../services/application.service.js";
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 export class ApplicationController {
   static async listByOpportunity(req, res) {
@@ -33,6 +34,16 @@ export class ApplicationController {
         decision,
         organizationUserId
       );
+
+      await ActivityLogService.log({
+        actorUserId: organizationUserId,
+        action: "application.review",
+        entityType: "application",
+        entityId: Number(applicationId),
+        metadata: {
+          decision,
+        },
+      });
 
       return res.status(200).json({
         message: "Application reviewed.",
@@ -75,6 +86,17 @@ export class ApplicationController {
         return res.status(400).json({ message: result.error });
       }
 
+      await ActivityLogService.log({
+        actorUserId: req.user?.userId ?? null,
+        action: "application.apply",
+        entityType: "application",
+        entityId: result?.applicationId,
+        metadata: {
+          volunteerId,
+          opportunityId,
+        },
+      });
+
       return res.status(201).json({
         message: "Application submitted.",
         application: result,
@@ -116,6 +138,47 @@ export class ApplicationController {
     } catch (err) {
       console.error("Update application error:", err);
       res.status(500).json({ message: "Server error", error: err.message });
+    }
+  }
+
+  static async cancel(req, res) {
+    try {
+      if (req.user.role !== "volunteer") {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const { applicationId } = req.params;
+      const userId = req.user.userId;
+
+      const application = await ApplicationService.cancel(applicationId, userId);
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "application.cancel",
+        entityType: "application",
+        entityId: Number(applicationId),
+      });
+
+      return res.status(200).json({
+        message: "Application cancelled.",
+        application,
+      });
+    } catch (err) {
+      console.error("Cancel application error:", err);
+
+      if (err.message.includes("Unauthorized")) {
+        return res.status(403).json({ message: err.message });
+      }
+
+      if (err.message.includes("not found")) {
+        return res.status(404).json({ message: err.message });
+      }
+
+      if (err.message.includes("already") || err.message.includes("Only pending")) {
+        return res.status(409).json({ message: err.message });
+      }
+
+      return res.status(500).json({ message: "Server error" });
     }
   }
 }
