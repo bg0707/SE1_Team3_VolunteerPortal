@@ -2,6 +2,7 @@ import express from 'express';
 import { OpportunityController } from '../controllers/opportunity.controller.js';
 import { authenticateUser } from '../middleware/authenticateUser.js';
 import { requireOrganization } from '../middleware/requireOrganization.js';
+import upload from '../middleware/uploadOpportunityImage.js';
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post(
     '/',
     authenticateUser, // Step 1: Verify JWT token, set req.user
     requireOrganization, // Step 2: Verify user role is "organization"
+    upload.single('image'),
     OpportunityController.create // Step 3: Handle the create request
 );
 
@@ -35,6 +37,7 @@ router.put(
     '/:id',
     authenticateUser,
     requireOrganization,
+    upload.single('image'),
     OpportunityController.update
 );
 

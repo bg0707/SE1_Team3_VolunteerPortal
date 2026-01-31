@@ -32,7 +32,7 @@ Application.init(
     },
 
     status: {
-      type: DataTypes.ENUM("pending", "accepted", "rejected"),
+      type: DataTypes.ENUM("pending", "accepted", "rejected", "cancelled"),
       defaultValue: "pending",
     },
 

@@ -118,6 +118,40 @@ export class ApplicationController {
       res.status(500).json({ message: "Server error", error: err.message });
     }
   }
+
+  static async cancel(req, res) {
+    try {
+      if (req.user.role !== "volunteer") {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const { applicationId } = req.params;
+      const userId = req.user.userId;
+
+      const application = await ApplicationService.cancel(applicationId, userId);
+
+      return res.status(200).json({
+        message: "Application cancelled.",
+        application,
+      });
+    } catch (err) {
+      console.error("Cancel application error:", err);
+
+      if (err.message.includes("Unauthorized")) {
+        return res.status(403).json({ message: err.message });
+      }
+
+      if (err.message.includes("not found")) {
+        return res.status(404).json({ message: err.message });
+      }
+
+      if (err.message.includes("already") || err.message.includes("Only pending")) {
+        return res.status(409).json({ message: err.message });
+      }
+
+      return res.status(500).json({ message: "Server error" });
+    }
+  }
 }
 
 export default ApplicationController;

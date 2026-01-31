@@ -13,6 +13,7 @@ export interface Opportunity {
   description: string;
   location: string | null;
   date: string;
+  imageUrl?: string | null;
   organization: Organization;
 }
 
@@ -79,12 +80,14 @@ export async function reviewApplication(
 
 export async function fetchApplicationsByVolunteer(
   volunteerId: number,
-  token: string
+  token?: string
 ): Promise<Application[]> {
   const res = await fetch(`${API_URL}/volunteer/${volunteerId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : undefined,
   });
 
   if (!res.ok) {
@@ -105,3 +108,22 @@ export async function applyToOpportunity(volunteerId: number, opportunityId: num
   return response.json();
 }
 
+export async function cancelApplication(
+  applicationId: number,
+  token: string
+): Promise<{ message: string; application: Application }> {
+  const res = await fetch(`${API_URL}/${applicationId}/cancel`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to cancel application");
+  }
+
+  return res.json();
+}

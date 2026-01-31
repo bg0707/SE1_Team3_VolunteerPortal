@@ -38,6 +38,7 @@ export default function ManageOpportunities() {
     date: "",
     categoryId: undefined,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +73,12 @@ export default function ManageOpportunities() {
   const handleInputChange = (e: FormChangeEvent) => {
     const { name, value } = e.target;
 
+    if (name === "image" && e.target instanceof HTMLInputElement) {
+      const file = e.target.files?.[0] ?? null;
+      setImageFile(file);
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value === "" ? undefined : value,
@@ -89,13 +96,13 @@ export default function ManageOpportunities() {
         return;
       }
 
-      const payload: CreateOpportunity = {
-        title: formData.title.trim(),
-        description: formData.description.trim(),
-        location: formData.location?.trim() || undefined,
-        date: formData.date || undefined,
-        categoryId: formData.categoryId,
-      };
+      const payload = new FormData();
+      payload.append("title", formData.title.trim());
+      payload.append("description", formData.description.trim());
+      if (formData.location?.trim()) payload.append("location", formData.location.trim());
+      if (formData.date) payload.append("date", formData.date);
+      if (formData.categoryId) payload.append("categoryId", String(formData.categoryId));
+      if (imageFile) payload.append("image", imageFile);
 
       if (editingOpportunity) {
         await updateOpportunity(
@@ -127,6 +134,7 @@ export default function ManageOpportunities() {
       date: "",
       categoryId: undefined,
     });
+    setImageFile(null);
     setEditingOpportunity(null);
     setShowForm(false);
     setError(null);
@@ -142,6 +150,7 @@ export default function ManageOpportunities() {
         : "",
       categoryId: opportunity.category?.categoryId,
     });
+    setImageFile(null);
 
     setEditingOpportunity(opportunity);
     setShowForm(true);
