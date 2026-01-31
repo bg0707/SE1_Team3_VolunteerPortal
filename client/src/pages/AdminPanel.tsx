@@ -12,6 +12,7 @@ import {
   fetchReportedOpportunities,
   moderateOpportunity,
   reviewOrganization,
+  fetchActivityLogs,
   type ReportedOpportunity,
   type OrganizationDetails,
   type OrganizationSummary,
@@ -21,9 +22,10 @@ import {
   updateUserStatus,
   type UserDetails,
   type UserSummary,
+  type ActivityLog,
 } from "../api/admin.api";
 
-type Tab = "organizations" | "reports" | "users" | "org-directory" | "opps";
+type Tab = "organizations" | "reports" | "users" | "org-directory" | "opps" | "activity";
 
 interface Organization {
   organizationId: number;
@@ -35,6 +37,7 @@ interface Organization {
 const USERS_PAGE_SIZE = 10;
 const ORGS_PAGE_SIZE = 10;
 const OPPS_PAGE_SIZE = 10;
+const ACTIVITY_PAGE_SIZE = 20;
 
 export default function AdminPanel() {
   const { token } = useAuth();
@@ -67,11 +70,22 @@ export default function AdminPanel() {
   const [oppsPage, setOppsPage] = useState(1);
   const [oppsLoading, setOppsLoading] = useState(false);
   const [oppsError, setOppsError] = useState<string | null>(null);
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  const [activityTotal, setActivityTotal] = useState(0);
+  const [activityPage, setActivityPage] = useState(1);
+  const [activityActionFilter, setActivityActionFilter] = useState("");
+  const [activityActorFilter, setActivityActorFilter] = useState("");
+  const [activityLoading, setActivityLoading] = useState(false);
+  const [activityError, setActivityError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const userTotalPages = Math.max(1, Math.ceil(usersTotal / USERS_PAGE_SIZE));
   const orgTotalPages = Math.max(1, Math.ceil(orgsTotal / ORGS_PAGE_SIZE));
   const oppTotalPages = Math.max(1, Math.ceil(oppsTotal / OPPS_PAGE_SIZE));
+  const activityTotalPages = Math.max(
+    1,
+    Math.ceil(activityTotal / ACTIVITY_PAGE_SIZE)
+  );
 
   const loadData = async () => {
     if (!authToken) return;
@@ -160,6 +174,30 @@ export default function AdminPanel() {
     }
   };
 
+  const loadActivityLogs = async () => {
+    if (!authToken) return;
+    setActivityLoading(true);
+    setActivityError(null);
+
+    const actorUserId = activityActorFilter.trim()
+      ? Number(activityActorFilter)
+      : Number.NaN;
+    try {
+      const data = await fetchActivityLogs(authToken, {
+        action: activityActionFilter.trim() || undefined,
+        actorUserId: Number.isFinite(actorUserId) ? actorUserId : undefined,
+        limit: ACTIVITY_PAGE_SIZE,
+        offset: (activityPage - 1) * ACTIVITY_PAGE_SIZE,
+      });
+      setActivityLogs(data.logs);
+      setActivityTotal(data.total);
+    } catch (e: any) {
+      setActivityError(e?.message ?? "Failed to load activity logs");
+    } finally {
+      setActivityLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, [authToken]);
@@ -174,6 +212,9 @@ export default function AdminPanel() {
     if (tab === "opps") {
       loadOpportunities();
     }
+    if (tab === "activity") {
+      loadActivityLogs();
+    }
   }, [
     authToken,
     tab,
@@ -185,6 +226,9 @@ export default function AdminPanel() {
     orgsStatus,
     orgsPage,
     oppsPage,
+    activityActionFilter,
+    activityActorFilter,
+    activityPage,
   ]);
 
   useEffect(() => {
@@ -198,6 +242,10 @@ export default function AdminPanel() {
   useEffect(() => {
     setOppsPage(1);
   }, [tab]);
+
+  useEffect(() => {
+    setActivityPage(1);
+  }, [activityActionFilter, activityActorFilter]);
 
   async function handleVerify(id: number) {
     try {
@@ -434,6 +482,14 @@ export default function AdminPanel() {
           }`}
         >
           Opportunities
+        </button>
+        <button
+          onClick={() => setTab("activity")}
+          className={`w-full sm:w-auto px-4 py-2 rounded border text-sm sm:text-base ${
+            tab === "activity" ? "bg-blue-600 text-white" : "bg-white"
+          }`}
+        >
+          Activity Log
         </button>
       </div>
 
@@ -1024,6 +1080,107 @@ export default function AdminPanel() {
             <button
               disabled={oppsPage >= oppTotalPages}
               onClick={() => setOppsPage((p) => Math.min(oppTotalPages, p + 1))}
+              className="px-3 py-1 border rounded disabled:opacity-50 w-full sm:w-auto"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab === "activity" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+              value={activityActionFilter}
+              onChange={(e) => setActivityActionFilter(e.target.value)}
+              placeholder="Filter by action (e.g., admin.user)"
+              className="border rounded px-3 py-2 w-full"
+            />
+            <input
+              value={activityActorFilter}
+              onChange={(e) => setActivityActorFilter(e.target.value)}
+              placeholder="Actor user ID"
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+
+          {activityError && (
+            <div className="p-3 bg-red-50 text-red-700 rounded">
+              {activityError}
+            </div>
+          )}
+
+          {activityLoading && (
+            <div className="text-gray-600">Loading activity logs...</div>
+          )}
+
+          {!activityLoading && (
+            <div className="text-sm text-gray-600">
+              Total log entries: {activityTotal}
+            </div>
+          )}
+
+          {!activityLoading && activityLogs.length === 0 && (
+            <div className="text-gray-600">No activity logs found.</div>
+          )}
+
+          {!activityLoading && activityLogs.length > 0 && (
+            <div className="overflow-x-auto border rounded bg-white">
+              <table className="min-w-full text-sm">
+                <thead className="bg-gray-50 text-gray-700">
+                  <tr>
+                    <th className="text-left px-4 py-3">Time</th>
+                    <th className="text-left px-4 py-3">Action</th>
+                    <th className="text-left px-4 py-3">Actor</th>
+                    <th className="text-left px-4 py-3">Entity</th>
+                    <th className="text-left px-4 py-3">Metadata</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activityLogs.map((log) => (
+                    <tr
+                      key={log.activityLogId}
+                      className="border-t hover:bg-gray-50 align-top"
+                    >
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {new Date(log.createdAt).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3">{log.action}</td>
+                      <td className="px-4 py-3">
+                        {log.actor?.email ?? "System"}
+                        {log.actor?.role ? ` (${log.actor.role})` : ""}
+                      </td>
+                      <td className="px-4 py-3">
+                        {log.entityType ? `${log.entityType}#` : "—"}
+                        {log.entityId ?? ""}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-gray-600 max-w-xs break-words">
+                        {log.metadata ? JSON.stringify(log.metadata) : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm">
+            <button
+              disabled={activityPage <= 1}
+              onClick={() => setActivityPage((p) => Math.max(1, p - 1))}
+              className="px-3 py-1 border rounded disabled:opacity-50 w-full sm:w-auto"
+            >
+              Previous
+            </button>
+            <span>
+              Page {activityPage} of {activityTotalPages}
+            </span>
+            <button
+              disabled={activityPage >= activityTotalPages}
+              onClick={() =>
+                setActivityPage((p) => Math.min(activityTotalPages, p + 1))
+              }
               className="px-3 py-1 border rounded disabled:opacity-50 w-full sm:w-auto"
             >
               Next

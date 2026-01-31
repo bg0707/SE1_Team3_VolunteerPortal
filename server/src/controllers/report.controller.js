@@ -1,4 +1,5 @@
 import { ReportService } from "../services/report.service.js";
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 export const ReportController = {
   async create(req, res) {
@@ -15,6 +16,16 @@ export const ReportController = {
       if (result?.error) {
         return res.status(400).json({ message: result.error });
       }
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "report.create",
+        entityType: "report",
+        entityId: result?.reportId,
+        metadata: {
+          opportunityId: Number(opportunityId),
+        },
+      });
 
       return res.status(201).json({ message: "Report submitted.", report: result });
     } catch (error) {

@@ -24,4 +24,7 @@ router.get("/users", AdminController.listUsers);
 router.get("/users/:userId", AdminController.getUserDetails);
 router.patch("/users/:userId/status", AdminController.updateUserStatus);
 
+// Activity log
+router.get("/activity-logs", AdminController.listActivityLogs);
+
 export default router;

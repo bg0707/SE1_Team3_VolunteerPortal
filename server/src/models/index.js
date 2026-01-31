@@ -6,6 +6,7 @@ import Opportunity from "./opportunity.model.js";
 import Application from "./application.model.js";
 import Report from "./report.model.js";
 import Notification from "./notification.model.js";
+import ActivityLog from "./activityLog.model.js";
 
 // Export all models
 export {
@@ -17,4 +18,5 @@ export {
   Application,
   Report,
   Notification,
+  ActivityLog,
 };

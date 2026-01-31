@@ -1,5 +1,6 @@
 
 import { AdminService } from "../services/admin.service.js";
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 export const AdminController = {
   async getReportedOpportunities(req, res) {
@@ -24,6 +25,12 @@ export const AdminController = {
       if (decision === "keep") {
         const result = await AdminService.keepOpportunity(opportunityId);
         if (result?.error) return res.status(404).json({ message: result.error });
+        await ActivityLogService.log({
+          actorUserId: req.user.userId,
+          action: "admin.opportunity.keep",
+          entityType: "opportunity",
+          entityId: opportunityId,
+        });
         return res.status(200).json({ message: "Opportunity kept. Reports cleared." });
       }
 
@@ -34,6 +41,13 @@ export const AdminController = {
         }
         const result = await AdminService.removeOpportunity(opportunityId, reason);
         if (result?.error) return res.status(404).json({ message: result.error });
+        await ActivityLogService.log({
+          actorUserId: req.user.userId,
+          action: "admin.opportunity.remove",
+          entityType: "opportunity",
+          entityId: opportunityId,
+          metadata: { reason },
+        });
         return res.status(200).json({ message: "Opportunity removed." });
       }
 
@@ -44,12 +58,25 @@ export const AdminController = {
         }
         const result = await AdminService.suspendOpportunity(opportunityId, reason);
         if (result?.error) return res.status(404).json({ message: result.error });
+        await ActivityLogService.log({
+          actorUserId: req.user.userId,
+          action: "admin.opportunity.suspend",
+          entityType: "opportunity",
+          entityId: opportunityId,
+          metadata: { reason },
+        });
         return res.status(200).json({ message: "Opportunity suspended." });
       }
 
       if (decision === "unsuspend") {
         const result = await AdminService.unsuspendOpportunity(opportunityId);
         if (result?.error) return res.status(404).json({ message: result.error });
+        await ActivityLogService.log({
+          actorUserId: req.user.userId,
+          action: "admin.opportunity.unsuspend",
+          entityType: "opportunity",
+          entityId: opportunityId,
+        });
         return res.status(200).json({ message: "Opportunity reinstated." });
       }
 
@@ -84,12 +111,24 @@ export const AdminController = {
       if (decision === "accept") {
         const result = await AdminService.verifyOrganization(organizationId);
         if (result?.error) return res.status(404).json({ message: result.error });
+        await ActivityLogService.log({
+          actorUserId: req.user.userId,
+          action: "admin.organization.accept",
+          entityType: "organization",
+          entityId: organizationId,
+        });
         return res.status(200).json({ message: "Organization verified.", organization: result.organization });
       }
 
       if (decision === "reject") {
         const result = await AdminService.rejectOrganization(organizationId);
         if (result?.error) return res.status(404).json({ message: result.error });
+        await ActivityLogService.log({
+          actorUserId: req.user.userId,
+          action: "admin.organization.reject",
+          entityType: "organization",
+          entityId: organizationId,
+        });
         return res.status(200).json({ message: "Organization rejected and removed." });
       }
 
@@ -158,6 +197,14 @@ export const AdminController = {
       const user = await AdminService.updateUserStatus(userId, status);
       if (!user) return res.status(404).json({ message: "User not found." });
 
+      await ActivityLogService.log({
+        actorUserId: req.user.userId,
+        action: "admin.user.status_update",
+        entityType: "user",
+        entityId: userId,
+        metadata: { status },
+      });
+
       res.status(200).json({ message: "User updated.", user });
     } catch (error) {
       console.error("Admin updateUserStatus error:", error);
@@ -224,6 +271,31 @@ export const AdminController = {
       res.status(200).json(data);
     } catch (error) {
       console.error("Admin listAllOpportunities error:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  },
+
+  async listActivityLogs(req, res) {
+    try {
+      const { action, actorUserId, limit, offset } = req.query;
+      const parsedLimit = Number(limit ?? 20);
+      const parsedOffset = Number(offset ?? 0);
+      const safeLimit = Number.isFinite(parsedLimit)
+        ? Math.min(Math.max(parsedLimit, 1), 100)
+        : 20;
+      const safeOffset = Number.isFinite(parsedOffset) ? Math.max(parsedOffset, 0) : 0;
+      const parsedActorUserId = actorUserId ? Number(actorUserId) : undefined;
+
+      const data = await ActivityLogService.list({
+        action: action ? String(action) : undefined,
+        actorUserId: Number.isFinite(parsedActorUserId) ? parsedActorUserId : undefined,
+        limit: safeLimit,
+        offset: safeOffset,
+      });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.error("Admin listActivityLogs error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
     }
   },
