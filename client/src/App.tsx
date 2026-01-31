@@ -14,53 +14,55 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 
 import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-neutral-primary">
       <NavBar />
+      <main className="flex-1">
+        <Routes>
 
-      <Routes>
-
-        {/* Public pages */}
-        <Route path="/" element={<Opportunities />} />
-        <Route path="/opportunities" element={<Opportunities />} />
-        <Route path="/authentication" element={<AuthenticationPage />} />
-        <Route path="/opportunities/:id" element={<OpportunityDetails />} />
+          {/* Public pages */}
+          <Route path="/" element={<Opportunities />} />
+          <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/authentication" element={<AuthenticationPage />} />
+          <Route path="/opportunities/:id" element={<OpportunityDetails />} />
 
   
  
-        {/* Protected Routes */}
-        <Route path="/my-applications" element={
-          <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>
-        } />
+          {/* Protected Routes */}
+          <Route path="/my-applications" element={
+            <ProtectedRoute role="volunteer"><MyApplications /></ProtectedRoute>
+          } />
 
-        <Route path="/admin" element={
-          <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
-        } />
+          <Route path="/admin" element={
+            <ProtectedRoute role="admin"><AdminPanel /></ProtectedRoute>
+          } />
 
-        <Route path="/admin/users" element={
-          <ProtectedRoute role="admin"><AdminUserManagement /></ProtectedRoute>
-        } />
+          <Route path="/admin/users" element={
+            <ProtectedRoute role="admin"><AdminUserManagement /></ProtectedRoute>
+          } />
 
-        <Route  path="/dashboard" element={
-          <ProtectedRoute>  <UserDashboard /> </ProtectedRoute>
-        }/>
+          <Route  path="/dashboard" element={
+            <ProtectedRoute>  <UserDashboard /> </ProtectedRoute>
+          }/>
 
-        <Route path="/manage-opportunities" element={
-          <ProtectedRoute role="organization"> <ManageOpportunities /> </ProtectedRoute>
-        } />
+          <Route path="/manage-opportunities" element={
+            <ProtectedRoute role="organization"> <ManageOpportunities /> </ProtectedRoute>
+          } />
 
 
-        {/*  Unauthorized  */}
-        <Route 
-          path="/unauthorized"
-          element={<Unauthorized />
-          }
-        />
+          {/*  Unauthorized  */}
+          <Route 
+            path="/unauthorized"
+            element={<Unauthorized />
+            }
+          />
 
-      </Routes>
-
+        </Routes>
+      </main>
+      <Footer />
     </div>
   );
 }
