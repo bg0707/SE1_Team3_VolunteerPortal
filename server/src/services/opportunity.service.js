@@ -72,6 +72,10 @@ export const OpportunityService = {
       cleanedData.location = opportunityData.location.trim();
     }
 
+    if (opportunityData.imageUrl?.trim()) {
+      cleanedData.imageUrl = opportunityData.imageUrl.trim();
+    }
+
     if (opportunityData.date) {
       const parsedDate = new Date(opportunityData.date);
       if (isNaN(parsedDate)) {
@@ -127,6 +131,11 @@ export const OpportunityService = {
     // Step 3: Verify the opportunity belongs to this organization
     if (opportunity.organizationId !== organizationId) {
       throw new Error("You do not have permission to update this opportunity");
+    }
+
+    if (typeof safeData.imageUrl === "string") {
+      const trimmedUrl = safeData.imageUrl.trim();
+      safeData.imageUrl = trimmedUrl.length ? trimmedUrl : null;
     }
 
     // Step 4: Update the opportunity

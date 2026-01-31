@@ -86,7 +86,7 @@ describe('ApplicationService', () => {
       organizationId: 7,
       title: 'Food Distribution',
     });
-    Application.findOne.mockResolvedValue({ id: 99 });
+    Application.findOne.mockResolvedValue({ id: 99, status: 'pending' });
 
     const result = await ApplicationService.apply(1, 10);
 
@@ -147,6 +147,36 @@ describe('ApplicationService', () => {
         message: expect.stringContaining('Alex'),
       })
     );
+  });
+
+  test('should reopen cancelled application', async () => {
+    const existing = {
+      id: 99,
+      status: 'cancelled',
+      save: jest.fn(),
+    };
+
+    Volunteer.findOne.mockResolvedValue({ volunteerId: 5, fullName: 'Alex' });
+    Opportunity.findByPk.mockResolvedValue({
+      id: 10,
+      organizationId: 7,
+      title: 'Food Distribution',
+    });
+    Application.findOne.mockResolvedValue(existing);
+    Organization.findByPk.mockResolvedValue({ userId: 77 });
+    Notification.create.mockResolvedValue({});
+
+    const result = await ApplicationService.apply(1, 10);
+
+    expect(existing.status).toBe('pending');
+    expect(existing.save).toHaveBeenCalled();
+    expect(Notification.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 77,
+        message: expect.stringContaining('applied'),
+      })
+    );
+    expect(result).toBe(existing);
   });
 
 
@@ -289,6 +319,80 @@ describe('ApplicationService', () => {
 
     expect(mockApplication.status).toBe('accepted');
     expect(mockApplication.save).toHaveBeenCalled();
+    expect(result).toBe(mockApplication);
+  });
+
+  // tests cancel - volunteer not found
+  test('should throw error if volunteer not found when cancelling', async () => {
+    Volunteer.findOne.mockResolvedValue(null);
+
+    await expect(ApplicationService.cancel(1, 10)).rejects.toThrow(
+      'Volunteer not found.'
+    );
+  });
+
+  // tests cancel - application not found
+  test('should throw error if application not found when cancelling', async () => {
+    Volunteer.findOne.mockResolvedValue({ volunteerId: 5 });
+    Application.findByPk.mockResolvedValue(null);
+
+    await expect(ApplicationService.cancel(1, 10)).rejects.toThrow(
+      'Application not found.'
+    );
+  });
+
+  // tests cancel - unauthorized
+  test('should throw error if volunteer does not own application', async () => {
+    Volunteer.findOne.mockResolvedValue({ volunteerId: 5 });
+    Application.findByPk.mockResolvedValue({
+      volunteerId: 6,
+      status: 'pending',
+    });
+
+    await expect(ApplicationService.cancel(1, 10)).rejects.toThrow(
+      'Unauthorized to cancel this application.'
+    );
+  });
+
+  // tests cancel - status invalid
+  test('should throw error if application is not pending or accepted', async () => {
+    Volunteer.findOne.mockResolvedValue({ volunteerId: 5 });
+    Application.findByPk.mockResolvedValue({
+      volunteerId: 5,
+      status: 'rejected',
+    });
+
+    await expect(ApplicationService.cancel(1, 10)).rejects.toThrow(
+      'Only pending or accepted applications can be cancelled.'
+    );
+  });
+
+  // tests cancel - successful
+  test('should cancel application and notify organization', async () => {
+    const mockApplication = {
+      volunteerId: 5,
+      status: 'pending',
+      save: jest.fn(),
+      opportunity: {
+        title: 'Food Distribution',
+        organization: { userId: 77 },
+      },
+    };
+
+    Volunteer.findOne.mockResolvedValue({ volunteerId: 5, fullName: 'Alex' });
+    Application.findByPk.mockResolvedValue(mockApplication);
+    Notification.create.mockResolvedValue({});
+
+    const result = await ApplicationService.cancel(1, 10);
+
+    expect(mockApplication.status).toBe('cancelled');
+    expect(mockApplication.save).toHaveBeenCalled();
+    expect(Notification.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 77,
+        message: expect.stringContaining('cancelled'),
+      })
+    );
     expect(result).toBe(mockApplication);
   });
 });

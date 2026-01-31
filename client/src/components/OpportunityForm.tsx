@@ -85,6 +85,14 @@ export default function OpportunityForm({
           ))}
         </select>
 
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={onChange}
+          className="w-full px-4 py-3 border rounded-xl bg-white"
+        />
+
         <div className="flex gap-4 pt-4">
           <button
             type="submit"

@@ -35,6 +35,7 @@ export const OpportunityController = {
     try {
       const userId = req.user.userId;
       const { title, description, location, date, categoryId } = req.body;
+      const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (!title?.trim()) {
         return res.status(400).json({ message: 'Title is required' });
@@ -44,10 +45,16 @@ export const OpportunityController = {
         return res.status(400).json({ message: 'Description is required' });
       }
 
-      const opportunity = await OpportunityService.createOpportunity(
-        { title, description, location, date, categoryId },
-        userId
-      );
+      const payload = {
+        title,
+        description,
+        location,
+        date,
+        categoryId,
+        ...(imageUrl ? { imageUrl } : {}),
+      };
+
+      const opportunity = await OpportunityService.createOpportunity(payload, userId);
 
       res.status(201).json({
         message: 'Opportunity created successfully',
@@ -86,6 +93,7 @@ export const OpportunityController = {
       const opportunityId = req.params.id;
       const userId = req.user.userId;
       const { title, description, location, date, categoryId } = req.body;
+      const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (!title?.trim() || !description?.trim()) {
         return res.status(400).json({
@@ -93,9 +101,18 @@ export const OpportunityController = {
         });
       }
 
+      const payload = {
+        title,
+        description,
+        location,
+        date,
+        categoryId,
+        ...(imageUrl ? { imageUrl } : {}),
+      };
+
       const opportunity = await OpportunityService.updateOpportunity(
         opportunityId,
-        { title, description, location, date, categoryId },
+        payload,
         userId
       );
 

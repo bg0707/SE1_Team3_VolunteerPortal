@@ -18,7 +18,7 @@ router.get("/volunteer/:volunteerId", ApplicationController.getMyApplications);
 // router.get("/:applicationId", ApplicationController.getMyApplicationDetails);
 
 // // Cancel an application
-// router.delete("/:applicationId", ApplicationController.cancel);
+router.patch("/:applicationId/cancel", authenticateUser, ApplicationController.cancel);
 
 // // Update application fields
 // router.put("/:applicationId", ApplicationController.update);

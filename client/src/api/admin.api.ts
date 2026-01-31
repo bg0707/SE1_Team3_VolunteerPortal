@@ -85,6 +85,7 @@ export interface Opportunity {
   description: string;
   location?: string | null;
   date?: string | null;
+  imageUrl?: string | null;
   createdAt: string;
   organization?: Organization;
 }
@@ -96,6 +97,7 @@ export interface AdminOpportunity {
   status?: "active" | "suspended";
   location?: string | null;
   date?: string | null;
+  imageUrl?: string | null;
   createdAt: string;
   organization?: {
     organizationId: number;

@@ -5,10 +5,12 @@ const API_URL = `${BASE_URL}/opportunities`;
 
 
 // Helper: Authorization headers
-function authHeaders(token?: string): HeadersInit {
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-  };
+function authHeaders(token?: string, isFormData = false): HeadersInit {
+  const headers: HeadersInit = {};
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -68,13 +70,14 @@ export interface CreateOpportunity {
    Create opportunity (organization)
    ========================= */
 export async function createOpportunity(
-  opportunity: CreateOpportunity,
+  opportunity: CreateOpportunity | FormData,
   token?: string
 ): Promise<Opportunity> {
+  const isFormData = opportunity instanceof FormData;
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: authHeaders(token),
-    body: JSON.stringify(opportunity),
+    headers: authHeaders(token, isFormData),
+    body: isFormData ? opportunity : JSON.stringify(opportunity),
   });
 
   if (!response.ok) {
@@ -109,13 +112,14 @@ export async function fetchMyOpportunities(
    ========================= */
 export async function updateOpportunity(
   opportunityId: number,
-  opportunity: CreateOpportunity,
+  opportunity: CreateOpportunity | FormData,
   token?: string
 ): Promise<Opportunity> {
+  const isFormData = opportunity instanceof FormData;
   const response = await fetch(`${API_URL}/${opportunityId}`, {
     method: "PUT",
-    headers: authHeaders(token),
-    body: JSON.stringify(opportunity),
+    headers: authHeaders(token, isFormData),
+    body: isFormData ? opportunity : JSON.stringify(opportunity),
   });
 
   if (!response.ok) {

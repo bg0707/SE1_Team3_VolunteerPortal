@@ -8,9 +8,10 @@ export interface Opportunity {
   description: string;
   location: string;
   date: string;
+  imageUrl?: string | null;
   status?: "active" | "suspended";
   category?: { name: string };
-  organization?: { name: string, isVerified: boolean };
+  organization?: { name: string, isVerified: boolean, description?: string };
   createdAt: string;
 
   category?: {
@@ -20,7 +21,8 @@ export interface Opportunity {
 
   organization?: {
     name: string;
-    userId: number; 
+    userId: number;
+    description?: string;
   };
 }
 
@@ -30,14 +32,30 @@ interface OpportunityCardProps {
 }
 
 const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity }) => {
+  const baseUrl = "http://localhost:3001";
+  const imageSrc = opportunity.imageUrl
+    ? opportunity.imageUrl.startsWith("http")
+      ? opportunity.imageUrl
+      : `${baseUrl}${opportunity.imageUrl}`
+    : "";
+
   return (
     <Link
       to={`/opportunities/${opportunity.opportunityId}`}
       className="block border border-default rounded-base p-4 bg-neutral-primary shadow-sm hover:shadow-lg transition hover:-translate-y-1"
     >
-      {/* Placeholder Image */}
-      <div className="w-full h-40 bg-neutral-secondary-soft rounded-base mb-4 flex items-center justify-center text-body">
-        Image Placeholder
+      {/* Image */}
+      <div className="w-full h-40 bg-neutral-secondary-soft rounded-base mb-4 overflow-hidden flex items-center justify-center text-body">
+        {imageSrc ? (
+          <img
+            src={imageSrc}
+            alt={opportunity.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          "Image Placeholder"
+        )}
       </div>
 
       {/* Title */}
