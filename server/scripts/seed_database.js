@@ -35,6 +35,7 @@ async function resetDatabase() {
     "applications",
     "reports",
     "notifications",
+    "activity_logs",
     "opportunities",
     "volunteers",
     "organizations",

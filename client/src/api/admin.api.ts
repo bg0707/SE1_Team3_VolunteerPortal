@@ -119,6 +119,20 @@ export interface ReportedOpportunity {
   reports: Report[];
 }
 
+export interface ActivityLog {
+  activityLogId: number;
+  action: string;
+  entityType?: string | null;
+  entityId?: number | null;
+  metadata?: Record<string, any> | null;
+  createdAt: string;
+  actor?: {
+    userId: number;
+    email: string;
+    role: "volunteer" | "organization" | "admin";
+  } | null;
+}
+
 function authHeaders(token: string) {
   return {
     "Content-Type": "application/json",
@@ -298,6 +312,28 @@ export async function fetchAllOpportunities(
   if (!res.ok) {
     const err = await res.json().catch(() => null);
     throw new Error(err?.message || "Failed to fetch opportunities");
+  }
+
+  return res.json();
+}
+
+export async function fetchActivityLogs(
+  token: string,
+  options: { action?: string; actorUserId?: number; limit?: number; offset?: number } = {}
+): Promise<{ total: number; logs: ActivityLog[] }> {
+  const params = new URLSearchParams();
+  if (options.action) params.set("action", options.action);
+  if (options.actorUserId) params.set("actorUserId", String(options.actorUserId));
+  if (options.limit) params.set("limit", String(options.limit));
+  if (options.offset) params.set("offset", String(options.offset));
+
+  const res = await fetch(`${API_URL}/activity-logs?${params.toString()}`, {
+    headers: authHeaders(token),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => null);
+    throw new Error(err?.message || "Failed to fetch activity logs");
   }
 
   return res.json();

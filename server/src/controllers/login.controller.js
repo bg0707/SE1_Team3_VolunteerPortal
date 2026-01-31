@@ -3,6 +3,7 @@ import authenticateUser from '../services/login.service.js';
 import asyncHandler from 'express-async-handler';
 import Volunteer from '../models/volunteer.model.js';
 import Organization from '../models/organization.model.js';
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 const loginController = asyncHandler(async (req, res) => {
 
@@ -89,6 +90,18 @@ const loginController = asyncHandler(async (req, res) => {
 
 
         // Send response with token
+        await ActivityLogService.log({
+            actorUserId: user.userId,
+            action: "user.login",
+            entityType: "user",
+            entityId: user.userId,
+            metadata: {
+                role: user.role,
+                ip: req.ip,
+                userAgent: req.headers["user-agent"],
+            },
+        });
+
         res.status(200).json({
             message: 'Login successful',
             token: token,

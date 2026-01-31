@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import Organization from "../models/organization.model.js";
 import jwt from "jsonwebtoken";
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 const registerOrganization = async (req, res) => {
   try {
@@ -52,6 +53,16 @@ const registerOrganization = async (req, res) => {
         userId: newUser.userId,
         email: newUser.email,
         role: newUser.role,
+      },
+    });
+
+    await ActivityLogService.log({
+      actorUserId: newUser.userId,
+      action: "user.register.organization",
+      entityType: "user",
+      entityId: newUser.userId,
+      metadata: {
+        email: newUser.email,
       },
     });
 

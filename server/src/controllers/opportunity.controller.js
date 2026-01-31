@@ -1,4 +1,5 @@
 import { OpportunityService } from '../services/opportunity.service.js';
+import { ActivityLogService } from "../services/activityLog.service.js";
 
 export const OpportunityController = {
   // GET /opportunities
@@ -55,6 +56,16 @@ export const OpportunityController = {
       };
 
       const opportunity = await OpportunityService.createOpportunity(payload, userId);
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "opportunity.create",
+        entityType: "opportunity",
+        entityId: opportunity?.opportunityId,
+        metadata: {
+          title: opportunity?.title,
+        },
+      });
 
       res.status(201).json({
         message: 'Opportunity created successfully',
@@ -116,6 +127,16 @@ export const OpportunityController = {
         userId
       );
 
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "opportunity.update",
+        entityType: "opportunity",
+        entityId: opportunity?.opportunityId ?? Number(opportunityId),
+        metadata: {
+          title: opportunity?.title,
+        },
+      });
+
       res.status(200).json({
         message: 'Opportunity updated successfully',
         opportunity
@@ -149,6 +170,13 @@ export const OpportunityController = {
       const userId = req.user.userId;
 
       await OpportunityService.deleteOpportunity(opportunityId, userId);
+
+      await ActivityLogService.log({
+        actorUserId: userId,
+        action: "opportunity.delete",
+        entityType: "opportunity",
+        entityId: Number(opportunityId),
+      });
 
       res.status(200).json({ message: 'Opportunity deleted successfully' });
     } catch (error) {
