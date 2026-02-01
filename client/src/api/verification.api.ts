@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/admin";
+import { API_BASE_URL } from "../config/api";
+
+const API_URL = `${API_BASE_URL}/admin`;
 
 // GET pending organizations
 export async function getPendingOrganizations(token: string) {
@@ -19,7 +21,7 @@ export async function getPendingOrganizations(token: string) {
 // VERIFY organization
 export async function verifyOrganization(id: number, token: string) {
   const response = await fetch(
-    `http://localhost:3001/admin/organizations/${id}/review`,
+    `${API_URL}/organizations/${id}/review`,
     {
       method: "POST",
       headers: {

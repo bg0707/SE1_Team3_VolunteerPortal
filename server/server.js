@@ -21,7 +21,13 @@ import passwordResetRoutes from "./src/routes/passwordReset.routes.js";
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+const corsOrigins = process.env.CORS_ORIGIN?.split(",").map((o) => o.trim()).filter(Boolean);
+app.use(
+  cors({
+    origin: corsOrigins && corsOrigins.length > 0 ? corsOrigins : true,
+    credentials: true,
+  })
+);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,8 +50,9 @@ app.use("/api/password-reset", passwordResetRoutes);
 
 
 // server listen 
-app.listen(3001, () => {
-  console.log("Server running on port 3001");
+const port = Number(process.env.PORT) || 3001;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
 
 // TEST DB CONNECTION

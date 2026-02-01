@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchOpportunityById } from "../api/opportunity.api";
 import { applyToOpportunity, fetchApplicationsByVolunteer } from "../api/applications.api";
 import { submitReport } from "../api/reports.api";
+import { API_BASE_URL } from "../config/api";
 
 import type { Opportunity } from "../components/OpportunityCard";
 import OpportunityApplicants from "../components/OpportunityApplicants";
@@ -43,11 +44,10 @@ export default function OpportunityDetails() {
 
   if (!opportunity) return <div>Loading...</div>;
 
-  const baseUrl = "http://localhost:3001";
   const imageSrc = opportunity.imageUrl
     ? opportunity.imageUrl.startsWith("http")
       ? opportunity.imageUrl
-      : `${baseUrl}${opportunity.imageUrl}`
+      : `${API_BASE_URL}${opportunity.imageUrl}`
     : "";
 
   const isOwner =

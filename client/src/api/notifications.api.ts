@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/notifications";
+import { API_BASE_URL } from "../config/api";
+
+const API_URL = `${API_BASE_URL}/notifications`;
 
 export interface Notification {
   notificationId: number;

@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/admin";
+import { API_BASE_URL } from "../config/api";
+
+const API_URL = `${API_BASE_URL}/admin`;
 
 export interface User {
   userId: number;

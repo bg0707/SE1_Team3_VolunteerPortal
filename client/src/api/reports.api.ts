@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/reports";
+import { API_BASE_URL } from "../config/api";
+
+const API_URL = `${API_BASE_URL}/reports`;
 
 export async function submitReport(token: string, opportunityId: number, content: string) {
   const res = await fetch(API_URL, {

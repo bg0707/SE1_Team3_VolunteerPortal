@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/applications";
+import { API_BASE_URL } from "../config/api";
+
+const API_URL = `${API_BASE_URL}/applications`;
 
 export interface Organization {
   organizationId: number;

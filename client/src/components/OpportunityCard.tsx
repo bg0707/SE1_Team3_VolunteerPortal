@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
 import {BadgeCheck} from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 export interface Opportunity {
   opportunityId: number;
@@ -32,11 +33,10 @@ interface OpportunityCardProps {
 }
 
 const OpportunityCard: React.FC<OpportunityCardProps> = ({ opportunity }) => {
-  const baseUrl = "http://localhost:3001";
   const imageSrc = opportunity.imageUrl
     ? opportunity.imageUrl.startsWith("http")
       ? opportunity.imageUrl
-      : `${baseUrl}${opportunity.imageUrl}`
+      : `${API_BASE_URL}${opportunity.imageUrl}`
     : "";
 
   return (

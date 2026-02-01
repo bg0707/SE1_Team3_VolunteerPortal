@@ -108,12 +108,23 @@ npm run dev
 ```
 
 ### Client
+Create `client/.env` (or copy `client/.env.example`) and set the API base URL:
+
+```bash
+VITE_API_BASE_URL=http://localhost:3001
+```
+
 ```bash
 cd client
 npm run dev
 ```
 
 Vite will print the local dev URL in the terminal.
+
+## Deployment Notes (Azure)
+- Server uses `PORT` from the environment (falls back to 3001).
+- Set `CORS_ORIGIN` to your deployed client URL (comma-separated for multiple).
+- For Azure MySQL, configure `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and set `DB_SSL=true` if required.
 
 ---
 

@@ -1,6 +1,7 @@
 import type { Opportunity } from "../components/OpportunityCard";
+import { API_BASE_URL } from "../config/api";
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = API_BASE_URL;
 const API_URL = `${BASE_URL}/opportunities`;
 
 

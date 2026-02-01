@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config/api";
 
 interface DashboardProps {
   user: any;
@@ -30,7 +31,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
         age: form.age ? Number(form.age) : undefined,
       };
 
-      const response = await fetch("http://localhost:3001/api/users/me", {
+      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
