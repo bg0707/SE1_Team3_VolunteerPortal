@@ -13,6 +13,8 @@ import applicationRoutes from "./src/routes/application.routes.js"
 import adminRoutes from "./src/routes/admin.routes.js";
 import reportRoutes from "./src/routes/report.routes.js";
 import notificationRoutes from "./src/routes/notification.routes.js";
+import userRoutes from "./src/routes/user.routes.js";
+import passwordResetRoutes from "./src/routes/passwordReset.routes.js";
 
 
 
@@ -35,6 +37,10 @@ app.use("/categories", categoryRoutes);
 app.use("/admin", adminRoutes);
 app.use("/reports", reportRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/password-reset", passwordResetRoutes);
+
+
 
 
 // server listen 

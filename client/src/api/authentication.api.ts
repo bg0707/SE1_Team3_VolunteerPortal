@@ -79,3 +79,36 @@ export async function registerOrganization(
 
   return response.json();
 }
+
+// REQUEST PASSWORD RESET (
+export async function requestPasswordReset(email: string) {
+  const response = await fetch(`${API_URL}/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => null);
+    throw new Error(err?.message || "Password reset request failed");
+  }
+
+  // Return the reset token directly
+  return response.json(); 
+}
+
+// RESET PASSWORD
+export async function resetPassword(token: string, newPassword: string) {
+  const response = await fetch(`${API_URL}/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, newPassword }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => null);
+    throw new Error(err?.message || "Password reset failed");
+  }
+
+  return response.json();
+}
