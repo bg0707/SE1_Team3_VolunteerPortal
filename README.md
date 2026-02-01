@@ -11,6 +11,7 @@
 ![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
 ![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)
+![Version](https://img.shields.io/badge/Version-0.1-ff8a00)
 
 A university Software Engineering project — a full‑stack web app that connects local nonprofits with volunteers to simplify community engagement.
 
