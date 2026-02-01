@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from "express";
 import cors from "cors";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import opportunityRoutes from "./src/routes/opportunity.routes.js";
@@ -45,6 +46,19 @@ app.use("/reports", reportRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/password-reset", passwordResetRoutes);
+
+// Serve frontend (built React app) in production
+if (process.env.NODE_ENV === "production") {
+  const clientDist = path.join(__dirname, "public");
+  const indexPath = path.join(clientDist, "index.html");
+
+  if (fs.existsSync(indexPath)) {
+    app.use(express.static(clientDist));
+    app.get("*", (req, res) => {
+      res.sendFile(indexPath);
+    });
+  }
+}
 
 
 
