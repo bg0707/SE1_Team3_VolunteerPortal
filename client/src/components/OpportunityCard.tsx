@@ -11,20 +11,14 @@ export interface Opportunity {
   date: string;
   imageUrl?: string | null;
   status?: "active" | "suspended";
-  category?: { name: string };
-  organization?: { name: string, isVerified: boolean, description?: string };
-  createdAt: string;
-
-  category?: {
-    categoryId: number;
-    name: string;
-  };
-
+  category?: { categoryId?: number; name: string };
   organization?: {
     name: string;
-    userId: number;
+    userId?: number;
+    isVerified?: boolean;
     description?: string;
   };
+  createdAt: string;
 }
 
 

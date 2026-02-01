@@ -76,7 +76,15 @@ const OrganizationRegistrationForm: React.FC<Props> = ({ switchToLogin }) => {
       <textarea name="description" placeholder="Description" value={formData.description} onChange={handleTextareaChange} className="px-3 py-2 border border-gray-300 rounded-md h-24 resize-none overflow-y-auto" style={{ lineHeight: "1.5rem" }} />
       <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md" />
       <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="px-3 py-2 border border-gray-300 rounded-md" />
-      <button type="submit" className="py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600">Register</button>
+      {err && <p className="text-sm text-red-600">{err}</p>}
+      {success && <p className="text-sm text-green-600">{success}</p>}
+      <button
+        type="submit"
+        disabled={loading}
+        className="py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-70"
+      >
+        {loading ? "Registering..." : "Register"}
+      </button>
     </form>
   );
 };

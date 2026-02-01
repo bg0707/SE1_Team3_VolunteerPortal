@@ -34,7 +34,7 @@ export default function OpportunityDetails() {
       if (user?.role === "volunteer") {
         const apps = await fetchApplicationsByVolunteer(user.userId);
         setAlreadyApplied(
-          apps.some((app) => app.opportunity.opportunityId === Number(id))
+          apps.some((app) => app.opportunity?.opportunityId === Number(id))
         );
       }
     };

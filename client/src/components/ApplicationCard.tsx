@@ -17,6 +17,10 @@ const ApplicationCard = ({ application, onCancel, cancelling }: Props) => {
       ? "text-gray-500"
       : "text-blue-600";
 
+  if (!opport) {
+    return null;
+  }
+
   return (
     <div className="border border-gray-200 rounded-xl p-5 mb-4 shadow-sm bg-white">
       <h3 className="text-xl font-semibold mb-1">{opport.title}</h3>
