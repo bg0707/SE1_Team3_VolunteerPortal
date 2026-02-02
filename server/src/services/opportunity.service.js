@@ -19,6 +19,17 @@ export const OpportunityService = {
       where.location = filters.location;
     }
 
+    if (filters.date) {
+      const parsedDate = new Date(filters.date);
+      if (!isNaN(parsedDate)) {
+        const start = new Date(parsedDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(parsedDate);
+        end.setHours(23, 59, 59, 999);
+        where.date = { [Op.between]: [start, end] };
+      }
+    }
+
     if (filters.search) {
       where[Op.or] = [
         { title: { [Op.like]: `%${filters.search}%` } },

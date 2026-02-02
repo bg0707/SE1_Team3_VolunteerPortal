@@ -5,6 +5,7 @@ export interface FiltersProps {
     search?: string;
     categoryId?: string;
     location?: string;
+    date?: string;
   };
   onChange: (newFilters: any) => void;
 }
@@ -62,6 +63,17 @@ const Filters: React.FC<FiltersProps> = ({ filters, onChange }) => {
             <option value="Esch-sur-Alzette">Esch-sur-Alzette</option>
             <option value="Differdange">Differdange</option>
           </select>
+        </div>
+
+        {/* Date */}
+        <div>
+          <label className="block mb-1 text-body font-medium">Date</label>
+          <input
+            type="date"
+            value={filters.date || ""}
+            onChange={(e) => onChange({ ...filters, date: e.target.value })}
+            className="w-full p-2 border border-default rounded-base bg-neutral-primary text-body"
+          />
         </div>
 
       </div>

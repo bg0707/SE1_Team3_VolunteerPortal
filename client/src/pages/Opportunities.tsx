@@ -8,6 +8,7 @@ interface FiltersType {
   search?: string;
   categoryId?: string;
   location?: string;
+  date?: string;
 }
 
 export default function Opportunities() {

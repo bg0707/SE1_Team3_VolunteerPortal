@@ -20,13 +20,17 @@ Volunteers can register, log in, browse opportunities, and apply. Organizations 
 ---
 
 ## Website
-**Here you can access the website link:** `https://YOUR-DEPLOYED-URL.com`
+**Here you can access the website link:** `https://volunteer-portal-hcccfygngna9eph0.francecentral-01.azurewebsites.net`
 
 Scan the QR code to open the site on mobile:
 
-![Website QR Code](docs/qr-code.png)
+<img src="docs/qr-code.png" alt="Website QR Code" width="140" />
 
-> Replace the URL and QR code image with your deployed website details.
+
+---
+
+## API Documentation
+Here you can find the API documentation: `docs/api.md`
 
 ---
 

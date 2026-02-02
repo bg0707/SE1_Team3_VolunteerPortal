@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchOpportunityById } from "../api/opportunity.api";
 import { applyToOpportunity, fetchApplicationsByVolunteer } from "../api/applications.api";
 import { submitReport } from "../api/reports.api";
-import { API_BASE_URL } from "../config/api";
+import { ASSET_BASE_URL } from "../config/api";
 
 import type { Opportunity } from "../components/OpportunityCard";
 import OpportunityApplicants from "../components/OpportunityApplicants";
@@ -34,7 +34,11 @@ export default function OpportunityDetails() {
       if (user?.role === "volunteer") {
         const apps = await fetchApplicationsByVolunteer(user.userId);
         setAlreadyApplied(
-          apps.some((app) => app.opportunity?.opportunityId === Number(id))
+          apps.some(
+            (app) =>
+              app.opportunity?.opportunityId === Number(id) &&
+              app.status !== "cancelled"
+          )
         );
       }
     };
@@ -47,7 +51,7 @@ export default function OpportunityDetails() {
   const imageSrc = opportunity.imageUrl
     ? opportunity.imageUrl.startsWith("http")
       ? opportunity.imageUrl
-      : `${API_BASE_URL}${opportunity.imageUrl}`
+      : `${ASSET_BASE_URL}${opportunity.imageUrl}`
     : "";
 
   const isOwner =

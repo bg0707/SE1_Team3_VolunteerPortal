@@ -37,13 +37,13 @@ const uploadsDir = path.join(__dirname, "uploads");
 app.use("/uploads", express.static(uploadsDir));
 
 // routes
-app.use("/opportunities", opportunityRoutes);
-app.use("/authentication", authenticationRoutes);
-app.use("/applications", applicationRoutes);
-app.use("/categories", categoryRoutes);
-app.use("/admin", adminRoutes);
-app.use("/reports", reportRoutes);
-app.use("/notifications", notificationRoutes);
+app.use("/api/opportunities", opportunityRoutes);
+app.use("/api/authentication", authenticationRoutes);
+app.use("/api/applications", applicationRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/password-reset", passwordResetRoutes);
 
@@ -54,7 +54,7 @@ if (process.env.NODE_ENV === "production") {
 
   if (fs.existsSync(indexPath)) {
     app.use(express.static(clientDist));
-    app.get("*", (req, res) => {
+    app.get(/.*/, (req, res) => {
       res.sendFile(indexPath);
     });
   }
