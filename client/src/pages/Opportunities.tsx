@@ -18,12 +18,14 @@ export default function Opportunities() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
+    // Refetch whenever filters change.
     fetchOpportunities(filters).then((data: Opportunity[]) =>
       setOpportunities(data)
     );
   }, [filters]);
 
   useEffect(() => {
+    // Categories are static enough to load once on mount.
     fetchCategories()
       .then(setCategories)
       .catch(() => setCategories([]));
@@ -33,6 +35,7 @@ export default function Opportunities() {
     <div className="max-w-screen-xl mx-auto mt-28 p-4">
       <Filters filters={filters} categories={categories} onChange={setFilters} />
 
+      {/* Card grid stays responsive across breakpoints. */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {opportunities.map((opp) => (
           <OpportunityCard key={opp.opportunityId} opportunity={opp} />

@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "../config/api";
 
+// Centralized auth endpoint root.
 const API_URL = `${API_BASE_URL}/authentication`;
 
 export interface LoginResponse {
@@ -17,6 +18,7 @@ export interface LoginResponse {
 
 // LOGIN
 export async function login(email: string, password: string): Promise<LoginResponse> {
+  // Returns a JWT token + user payload on success.
   const response = await fetch(`${API_URL}/login`, { 
     method: "POST",
     headers: {
@@ -95,7 +97,7 @@ export async function requestPasswordReset(email: string) {
     throw new Error(err?.message || "Password reset request failed");
   }
 
-  // Return the reset token directly
+  // Return the reset token directly (useful for dev/testing).
   return response.json(); 
 }
 

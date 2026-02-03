@@ -36,6 +36,7 @@ export const OpportunityController = {
     try {
       const userId = req.user.userId;
       const { title, description, location, date, categoryId } = req.body;
+      // File upload middleware sets req.file when an image is provided.
       const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (!title?.trim()) {
@@ -46,6 +47,7 @@ export const OpportunityController = {
         return res.status(400).json({ message: 'Description is required' });
       }
 
+      // Build payload with optional fields only when present.
       const payload = {
         title,
         description,
@@ -104,6 +106,7 @@ export const OpportunityController = {
       const opportunityId = req.params.id;
       const userId = req.user.userId;
       const { title, description, location, date, categoryId } = req.body;
+      // File upload middleware sets req.file when an image is provided.
       const imageUrl = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       if (!title?.trim() || !description?.trim()) {
@@ -112,6 +115,7 @@ export const OpportunityController = {
         });
       }
 
+      // Build payload with optional fields only when present.
       const payload = {
         title,
         description,

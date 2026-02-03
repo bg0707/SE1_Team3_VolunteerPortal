@@ -5,6 +5,7 @@ import OrganizationRegistrationForm from "../components/registerOrganizationForm
 import Dashboard from "../components/Dashbord";
 
 export default function AuthenticationPage() {
+  // view controls which form is rendered.
   const [view, setView] = useState<"login" | "volunteer" | "organization">("login");
   const [user, setUser] = useState<any>(null);
 
@@ -19,6 +20,7 @@ export default function AuthenticationPage() {
   }, []);
 
   const handleLoginSuccess = (userData: any) => {
+    // Keep local copy so the page can swap to dashboard immediately.
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };

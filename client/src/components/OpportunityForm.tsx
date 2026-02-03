@@ -32,6 +32,7 @@ export default function OpportunityForm({
       </h2>
 
       <form onSubmit={onSubmit} className="space-y-5">
+        {/* Text fields map 1:1 with the CreateOpportunity payload. */}
         <input
           type="text"
           name="title"
@@ -77,6 +78,7 @@ export default function OpportunityForm({
           onChange={onChange}
           className="w-full px-4 py-3 border rounded-xl bg-white"
         >
+          {/* Empty option lets users leave category unset. */}
           <option value="">Select a category</option>
           {categories.map((cat) => (
             <option key={cat.categoryId} value={cat.categoryId}>
