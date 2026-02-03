@@ -38,17 +38,17 @@ Scan the QR code to open the site on mobile:
 
 ---
 
+## Report
+- Here you can find a report explaining how we worked: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
+
+---
+
 ## Team
 - **Bruno Cunha Gaspar** — `bg0707`
 - **Gabriel Botelho** — `gBotelho2003`
 - **Cédric Bassong** — `Cedric29-05`
 - **Jiahao LIN** — `IdubiJam`
 - **Stylianos NTINOS** — `Stylnt`
-
----
-
-## Report
-- Here you can find a report explaining how we worked: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
 
 ---
 
