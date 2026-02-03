@@ -22,8 +22,6 @@ Volunteers can register, log in, browse opportunities, and apply. Organizations 
 ## Website
 **Here you can access the website link:** `https://volunteer-portal-hcccfygngna9eph0.francecentral-01.azurewebsites.net`
 
-**Deliverable 2:** available on the `deliverable2` branch.
-
 **CI Tests:** see the GitHub Actions "Run tests" workflow in the Actions tab.
 
 Scan the QR code to open the site on mobile:
@@ -63,6 +61,10 @@ Here you can find the API documentation: `docs/api.md`
 - **Authentication**: JWT-based login with protected routes.
 - **Role-based navigation**: tailored UI and access for each user role.
 - **MySQL data layer**: relational schema managed via Sequelize.
+
+---
+
+**Deliverable 2:** available on the `deliverable2` branch.
 
 ---
 
