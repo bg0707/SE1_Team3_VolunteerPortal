@@ -98,7 +98,7 @@ Auth: required (organization)
 Apply to an opportunity.
 Request body:
 ```
-{ "userId": <volunteerUserId>, "opportunityId": <id> }
+{ "volunteerId": <volunteerId>, "opportunityId": <id> }
 ```
 
 ### GET /applications/volunteer/:volunteerId
@@ -161,6 +161,26 @@ Auth: required
 Request body (fields are optional by role):
 ```
 { "fullName": "...", "age": 22, "organizationName": "...", "description": "...", "password": "..." }
+```
+
+---
+
+## Password Reset (alternate routes)
+
+These exist in addition to `/authentication/forgot-password` and `/authentication/reset-password`.
+
+### POST /password-reset/request
+Request reset token.
+Request body:
+```
+{ "email": "user@example.com" }
+```
+
+### POST /password-reset/reset
+Reset password with token.
+Request body:
+```
+{ "token": "...", "newPassword": "..." }
 ```
 
 ---

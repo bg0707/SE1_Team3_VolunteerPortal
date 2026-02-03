@@ -13,7 +13,7 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
 
 3. As a volunteer, I want to apply to listings so that I can participate in the cause that I want to contribute to. 
 
-4. As a volunteer, I want to view and manage my upcoming volunteer activities so that I can stay organized. 
+4. As a volunteer, I want to view and manage my applications so that I can stay organized. 
 
 5. As a volunteer, I want to report false opportunities so that the website can remove these.  
 
@@ -30,7 +30,7 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
 
 3. As an admin, I want to manage user accounts, so the website can be safe and functional. 
 
-4. As an admin, I want to check organizations against an external register so that only verified organizations can be in our website. 
+4. As an admin, I want to review organization verification requests so that only verified organizations can be on the website. 
 
 **Nonprofit organizations**
 
@@ -40,7 +40,7 @@ We follow the following format:  `As a <user role>, I want <goal> so that <reaso
 
 3. As a nonprofit organization, I want to create an account, so I can post opportunities.
  
-4. As a nonprofit organization, I want to mark an opportunity as fulfilled so that new applicants cannot apply. 
+4. As a nonprofit organization, I want to manage opportunities (create/edit/delete) so that listings stay accurate. 
 
 5. As a nonprofit organization, I want receive notifications when a new volunteer applies so that I can review applications promptly.
 
@@ -61,7 +61,7 @@ Tyrion logs into the website and checks the opportunities page. He then filters 
 **Outcome:**
 Tyrion’s application is sent and the non profit organization receives a notification.  
 
-`Scenario 2 - Admin verifying a new organization`
+`Scenario 2 - Organization creating a new opportunity`
 
 **Author:** Nonprofit Representative (John Snow)
 
@@ -69,7 +69,7 @@ Tyrion’s application is sent and the non profit organization receives a notifi
 
 **Scenario:** 
 
-John logs into his account that as a representative of a nonprofit organization, he clicks the “Add New Opportunity" Button and he fills out the form asking the title, location, description, date and number of volunteers needed and in case some needed qualifications. The system then validates the inputs and puts the opportunity online.  
+John logs into his organization account, clicks the “Add New Opportunity" button, and fills out the form with title, location, description, date, and category. The system validates the inputs and publishes the opportunity.  
 
 **Outcome:**
 The opportunity appears on the volunteers listings, ready for applications
@@ -82,7 +82,7 @@ The opportunity appears on the volunteers listings, ready for applications
 
 **Scenario:**
 
-Alred logs into his admin account and goes to the dashboard and checks for requests pending. Alfred then opens the request of “Plant Tree” and verifies their legitimacy by cross checking their register number. She clicks approve. 
+Alfred logs into his admin account and goes to the dashboard to check pending verification requests. He reviews the organization details and clicks approve. 
 
 **Outcome:**
 “Plant Tree” becomes a verified and active organization on the platform. 

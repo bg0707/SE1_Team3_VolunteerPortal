@@ -8,6 +8,6 @@
 |-------------|----------------------|--------------------------------|-----------------------------------------------------------------------|
 | **Primary** | Volunteer             | Requirement provider / User    | Browse, filter, and apply for opportunities; track applications.      |
 | **Primary** | Non-Profit Organization | Requirement provider / User | Post and manage applications and listings.                            |
-| **Secondary** | Website Admins       | Validators / Decision-makers   | Manage user accounts and check if content is allowed.                 |
-| **External** | Local Government     | Domain experts                 | Ensure everything is legal and that Non-Profit Organizations are valid. |
+| **Secondary** | Website Admins       | Validators / Decision-makers   | Moderate content, verify organizations, and manage user status.        |
+| **External** | Local Government     | Domain experts                 | Regulatory reference (external verification not implemented).          |
 | **Hidden** | Developers            | Maintainers / Domain experts   | Ensure maintainability, scalability, and security of the system.      |

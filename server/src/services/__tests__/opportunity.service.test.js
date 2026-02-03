@@ -56,6 +56,24 @@ describe('OpportunityService', () => {
     );
   });
 
+  test('getAllOpportunities applies date filter when provided', async () => {
+    // Arrange
+    Opportunity.findAll.mockResolvedValue([]);
+
+    // Act
+    await OpportunityService.getAllOpportunities({
+      date: '2026-02-15',
+    });
+
+    // Assert
+    const callArgs = Opportunity.findAll.mock.calls[0][0];
+    const between = callArgs.where?.date?.[Op.between];
+    expect(Array.isArray(between)).toBe(true);
+    expect(between?.length).toBe(2);
+    expect(between?.[0]).toBeInstanceOf(Date);
+    expect(between?.[1]).toBeInstanceOf(Date);
+  });
+
   test('getAllOpportunities returns all when no filters', async () => {
     const mockOpportunities = [{ id: 1 }, { id: 2 }];
     Opportunity.findAll.mockResolvedValue(mockOpportunities);

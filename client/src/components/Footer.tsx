@@ -58,6 +58,15 @@ export default function Footer() {
                   Admin panel
                 </a>
               </li>
+              <li className="pt-1">
+                <span className="text-slate-500">Support: </span>
+                <a
+                  href="mailto:support@volunteer-portal.org"
+                  className="hover:text-slate-900"
+                >
+                  support@volunteer-portal.org
+                </a>
+              </li>
             </ul>
           </div>
         </div>

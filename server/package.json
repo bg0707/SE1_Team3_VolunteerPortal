@@ -8,6 +8,7 @@
     "start": "node server.js",
     "test": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "seed:admin": "node scripts/seed_admin_moderation_data.js",
+    "seed:opportunities": "node scripts/seed_opportunities.js",
     "db:sync": "node scripts/sync_db.js",
     "migrate:add-opportunity-status": "node scripts/add_opportunity_status.js",
     "migrate:add-opportunity-image-url": "node scripts/add_opportunity_image_url.js"

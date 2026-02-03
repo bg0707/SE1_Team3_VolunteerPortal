@@ -45,10 +45,31 @@ async function main() {
     await adminUser.save();
   }
 
-  const [defaultCategory] = await Category.findOrCreate({
-    where: { name: "General" },
-    defaults: { name: "General" },
-  });
+  const categoryNames = [
+    "General",
+    "Environment",
+    "Education",
+    "Health",
+    "Community",
+    "Food Security",
+    "Elderly Care",
+    "Children & Youth",
+    "Animals",
+    "Arts & Culture",
+    "Sports",
+    "Technology",
+    "Mental Health",
+    "Disaster Relief",
+    "Housing",
+    "Accessibility",
+  ];
+
+  const categories = await Promise.all(
+    categoryNames.map((name) =>
+      Category.findOrCreate({ where: { name }, defaults: { name } })
+    )
+  );
+  const defaultCategory = categories[0][0];
 
   const [pendingOrgUser] = await User.findOrCreate({
     where: { email: "pending-org@example.com" },

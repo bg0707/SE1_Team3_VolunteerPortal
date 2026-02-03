@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { Category } from "../api/category.api";
 
 export interface FiltersProps {
   filters: {
@@ -7,10 +8,11 @@ export interface FiltersProps {
     location?: string;
     date?: string;
   };
+  categories: Category[];
   onChange: (newFilters: any) => void;
 }
 
-const Filters: React.FC<FiltersProps> = ({ filters, onChange }) => {
+const Filters: React.FC<FiltersProps> = ({ filters, categories, onChange }) => {
   return (
     <div className="bg-neutral-secondary-soft p-6 rounded-base shadow-lg border border-default/60 mb-6 backdrop-blur-sm">
       <h2 className="text-heading text-lg font-semibold mb-4 pb-2 border-b border-default/40">
@@ -42,27 +44,25 @@ const Filters: React.FC<FiltersProps> = ({ filters, onChange }) => {
             className="w-full p-2 border border-default rounded-base bg-neutral-primary text-body"
           >
             <option value="">All Categories</option>
-            <option value="1">Environment</option>
-            <option value="2">Education</option>
-            <option value="3">Health</option>
-            {/* Add more if you inserted them */}
+            {categories.map((category) => (
+              <option key={category.categoryId} value={String(category.categoryId)}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
-{/* Location */}
+        {/* Location */}
         <div>
           <label className="block mb-1 text-body font-medium">Location</label>
-          <select
+          <input
+            type="text"
             value={filters.location || ""}
             onChange={(e) =>
               onChange({ ...filters, location: e.target.value })
             }
+            placeholder="e.g., Luxembourg"
             className="w-full p-2 border border-default rounded-base bg-neutral-primary text-body"
-          >
-            <option value="">All Locations</option>
-            <option value="Luxembourg">Luxembourg</option>
-            <option value="Esch-sur-Alzette">Esch-sur-Alzette</option>
-            <option value="Differdange">Differdange</option>
-          </select>
+          />
         </div>
 
         {/* Date */}

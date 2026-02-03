@@ -26,6 +26,25 @@ Scan the QR code to open the site on mobile:
 
 <img src="docs/qr-code.png" alt="Website QR Code" width="140" />
 
+**Test Credentials**
+- **Admin**: `admin@example.com` / `admin123`
+- **Volunteer**: `volunteer@example.com` / `vol123`
+- **Organization (Helping Hands)**: `helpinghands@example.org` / `HH-Volunteer-2026!`
+
+
+---
+
+## Team
+- **Bruno Cunha Gaspar** — `bg0707`
+- **Gabriel Botelho** — `gBotelho2003`
+- **Cédric Bassong** — `Cedric29-05`
+- **Jiahao LIN** — `IdubiJam`
+- **Stylianos NTINOS** — `Stylnt`
+
+---
+
+## Report
+- Here you can find a report explaining how we worked: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
 
 ---
 
@@ -100,6 +119,8 @@ Optional scripts:
 ```bash
 # from server/
 npm run seed:admin
+npm run db:sync
+npm run seed:opportunities
 npm run migrate:add-opportunity-status
 ```
 
@@ -116,7 +137,7 @@ npm run dev
 Create `client/.env` (or copy `client/.env.example`) and set the API base URL:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:3001
+VITE_API_BASE_URL=http://localhost:3001/api
 ```
 
 ```bash

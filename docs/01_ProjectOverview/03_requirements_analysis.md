@@ -11,11 +11,13 @@
 | **FR5** | The system must allow organizations to create, edit, and delete volunteering opportunities. |
 | **FR6** | The system must allow volunteers to browse and filter available volunteering opportunities. |
 | **FR7** | The system must allow volunteers to apply to volunteering opportunities. |
-| **FR8** | The system must notify organizations when a volunteer applies to an opportunity. |
+| **FR8** | The system must notify organizations (in‑app) when a volunteer applies to an opportunity. |
 | **FR9** | The system must allow organizations to accept or reject volunteer applications. |
-| **FR10** | The system must notify volunteers of changes in their application status. |
+| **FR10** | The system must notify volunteers (in‑app) of changes in their application status. |
 | **FR11** | The system must allow volunteers to report inappropriate or suspicious opportunities. |
 | **FR12** | The system must allow administrators to review and verify nonprofit organization accounts. |
+| **FR13** | The system must authenticate users using secure tokens (JWT) for protected actions. |
+| **FR14** | The system must record key user/admin actions for audit purposes. |
 
 
 ## 3.2. Non-Functional Requirememts 
@@ -24,14 +26,14 @@
 |----|-------------|
 | **NFR1** | The system must support at least 100 concurrent authenticated users while maintaining functional availability. |
 | **NFR2** | The system must ensure that the Largest Contentful Paint (LCP) occurs within 2.5 seconds for at least 75% of user sessions under normal load. * |
-| **NFR3** | All client–server communications must be encrypted using HTTPS with TLS 1.2 or higher. |
+| **NFR3** | All client–server communications must be encrypted using HTTPS with TLS 1.2 or higher (deployment/infra‑dependent). |
 | **NFR4** | The system must be responsive and usable on desktop and mobile devices, and comply with WCAG 2.1 AA accessibility guidelines. |
 | **NFR5** | Access to system functionalities must be restricted based on user roles (volunteer, organization, administrator) using server-side authorization checks. |
-| **NFR6** | The backend must be structured into independent modules for authentication, user management, opportunity management, and application management, with no direct database access outside each module’s data layer. |
-| **NFR7** | User-triggered navigation or state updates must provide visible feedback within 200 ms in at least 90% of interactions. * |
+| **NFR6** | The backend must be structured into independent modules for authentication, user management, opportunity management, and application management; service‑layer data access is used throughout (some controllers import models for enrichment). |
+| **NFR7** | User-triggered navigation or state updates must provide visible feedback within 200 ms in at least 90% of interactions (not verified in code). * |
+| **NFR8** | Authentication tokens must be validated on the server for protected routes, and passwords must be stored using strong hashing. |
 
 \* Performance targets are based on Google Core Web Vitals guidelines.
 
 
 \* These values are according to the Google Core Web Vitals performance guidelines. See [here](https://developers.google.com/search/docs/appearance/core-web-vitals) 
-
