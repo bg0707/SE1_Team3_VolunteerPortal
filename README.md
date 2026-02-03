@@ -22,6 +22,10 @@ Volunteers can register, log in, browse opportunities, and apply. Organizations 
 ## Website
 **Here you can access the website link:** `https://volunteer-portal-hcccfygngna9eph0.francecentral-01.azurewebsites.net`
 
+**Deliverable 2:** available on the `deliverable2` branch.
+
+**CI Tests:** see the GitHub Actions "Run tests" workflow in the Actions tab.
+
 Scan the QR code to open the site on mobile:
 
 <img src="docs/qr-code.png" alt="Website QR Code" width="140" />
