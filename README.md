@@ -34,8 +34,10 @@ Scan the QR code to open the site on mobile:
 
 ---
 
-## Report
-- Here you can find a report explaining how we worked: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
+## Important Links
+- Report: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
+- Presentation: `docs/SWE1 - Deliverable 2_Presentation.pdf`
+- Video (deployment fallback): `docs/Webapp.mov`
 
 ---
 
