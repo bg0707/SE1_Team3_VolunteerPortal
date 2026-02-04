@@ -37,7 +37,7 @@ Scan the QR code to open the site on mobile:
 ## Important Links
 - Report: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
 - Presentation: `docs/SWE1 - Deliverable 2_Presentation.pdf`
-- Video (deployment fallback): `https://uniluxembourg-my.sharepoint.com/:f:/r/personal/0232421650_uni_lu/Documents/Software%20Engineering%20-%20Team%203%20-%20Video%20Fallback?csf=1&web=1&e=XLE7ef`
+- Video (deployment fallback): `https://uniluxembourg-my.sharepoint.com/:v:/g/personal/0232421650_uni_lu/IQAHuAk2uKFrQpeYJkThfPqKAXLqc9Qn03USGh7coAPhFDo?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=ag9uCz`
 
 ---
 
@@ -66,6 +66,11 @@ Here you can find the API documentation: `docs/api.md`
 
 **Deliverable 2:** available on the `deliverable2` branch.
 **CI Tests:** see the GitHub Actions "Run tests" workflow in the Actions tab.
+
+---
+
+## Individual Contributions
+Individual contributions can be found in GitHub Insights and the repository commit history.
 
 ---
 
