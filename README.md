@@ -37,7 +37,7 @@ Scan the QR code to open the site on mobile:
 ## Important Links
 - Report: `docs/Project Workflow, Engineering Practices & Learning Reflection.pdf`
 - Presentation: `docs/SWE1 - Deliverable 2_Presentation.pdf`
-- Video (deployment fallback): `docs/Webapp.mov`
+- Video (deployment fallback): `https://uniluxembourg-my.sharepoint.com/:f:/r/personal/0232421650_uni_lu/Documents/Software%20Engineering%20-%20Team%203%20-%20Video%20Fallback?csf=1&web=1&e=XLE7ef`
 
 ---
 
